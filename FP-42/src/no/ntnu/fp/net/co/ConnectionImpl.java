@@ -49,6 +49,7 @@ public class ConnectionImpl extends AbstractConnection {
         super();
         this.myPort = myPort;
         usedPorts.put(myPort, Boolean.TRUE);
+        myAddress = getIPv4Address();
         throw new NotImplementedException();
     }
 
@@ -76,6 +77,26 @@ public class ConnectionImpl extends AbstractConnection {
      */
     public void connect(InetAddress remoteAddress, int remotePort) throws IOException,
             SocketTimeoutException {
+        this.remoteAddress = remoteAddress.getHostAddress();
+        this.remotePort = remotePort;
+
+        KtnDatagram packet = constructInternalPacket(Flag.SYN);
+        try {
+            simplySendPacket(packet);
+        }
+        catch (ClException e) {
+            //TODO: Something useful
+        }
+
+        KtnDatagram synAck = receiveAck();
+        if (synAck.getFlag() == Flag.SYN_ACK) {
+            sendAck(synAck, false);
+            state = State.ESTABLISHED;
+        }
+        else {
+            //TODO: Something useful
+        }
+
         throw new NotImplementedException();
     }
 
