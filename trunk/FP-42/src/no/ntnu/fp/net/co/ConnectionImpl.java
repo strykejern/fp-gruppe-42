@@ -3,7 +3,6 @@
  */
 package no.ntnu.fp.net.co;
 
-import java.io.EOFException;
 import java.io.IOException;
 import java.net.ConnectException;
 import java.net.InetAddress;
@@ -12,10 +11,10 @@ import java.net.UnknownHostException;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Random;
 
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
-import no.ntnu.fp.net.admin.Log;
 import no.ntnu.fp.net.cl.ClException;
 import no.ntnu.fp.net.cl.ClSocket;
 import no.ntnu.fp.net.cl.KtnDatagram;
@@ -110,6 +109,8 @@ public class ConnectionImpl extends AbstractConnection {
      * @see Connection#accept()
      */
     public Connection accept() throws IOException, SocketTimeoutException {
+        State bufferState = state;
+
         state = State.LISTEN;
 
         KtnDatagram syn = receivePacket(true);
@@ -121,14 +122,23 @@ public class ConnectionImpl extends AbstractConnection {
 
             KtnDatagram ack = receiveAck();
 
-            remoteAddress = syn.getSrc_addr();
-            remotePort = syn.getSrc_port();
-            state = State.ESTABLISHED;
+
+            ConnectionImpl subConnection = new ConnectionImpl(syn.getDest_port());
+
+            subConnection.remoteAddress = syn.getSrc_addr();
+            subConnection.remotePort = syn.getSrc_port();
+
+
+            subConnection.state = State.ESTABLISHED;
+
+            usedPorts.put(syn.getDest_port(), Boolean.TRUE);
         }
         else {
+            state = State.CLOSED;
             //TODO: something useful
         }
 
+        state = bufferState;
         throw new NotImplementedException();
     }
 
