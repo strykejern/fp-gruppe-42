@@ -100,8 +100,6 @@ public class ConnectionImpl extends AbstractConnection {
             state = State.CLOSED;
             //TODO: Something useful
         }
-
-        throw new NotImplementedException();
     }
 
     /**
@@ -134,6 +132,8 @@ public class ConnectionImpl extends AbstractConnection {
                 subConnection.state = State.ESTABLISHED;
 
                 usedPorts.put(syn.getDest_port(), Boolean.TRUE);
+
+                return subConnection;
             }
         }
         else {
@@ -142,7 +142,7 @@ public class ConnectionImpl extends AbstractConnection {
         }
 
         state = bufferState;
-        throw new NotImplementedException();
+        return null;
     }
 
     /**
@@ -164,8 +164,6 @@ public class ConnectionImpl extends AbstractConnection {
         KtnDatagram packet = constructDataPacket(msg);
         if (sendDataPacketWithRetransmit(packet) == null)
             throw new IOException("No ack received");
-
-        throw new NotImplementedException();
     }
 
     /**
@@ -248,6 +246,18 @@ public class ConnectionImpl extends AbstractConnection {
      * @return true if packet is free of errors, false otherwise.
      */
     protected boolean isValid(KtnDatagram packet) {
-        throw new NotImplementedException();
+        if (packet.getChecksum() != packet.calculateChecksum()) return false;
+
+        if (packet.getSeq_nr() != nextSequenceNo) return false;
+
+        if (!packet.getDest_addr().equals(getIPv4Address())) return false;
+
+        if (!packet.getSrc_addr().equals(remoteAddress)) return false;
+
+        if (packet.getDest_port() != myPort) return false;
+
+        if (packet.getSrc_port() != remotePort) return false;
+
+        return true;
     }
 }
