@@ -156,6 +156,9 @@ public class ConnectionImpl extends AbstractConnection {
      * @see no.ntnu.fp.net.co.Connection#send(String)
      */
     public void send(String msg) throws ConnectException, IOException {
+        if (state != state.ESTABLISHED) {
+            throw new ConnectException("No connection established");
+        }
         KtnDatagram packet = constructDataPacket(msg);
         if (sendDataPacketWithRetransmit(packet) == null)
             throw new IOException("No ack received");
