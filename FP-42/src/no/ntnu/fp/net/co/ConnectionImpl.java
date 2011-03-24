@@ -122,16 +122,17 @@ public class ConnectionImpl extends AbstractConnection {
 
             KtnDatagram ack = receiveAck();
 
+            if (ack != null){
+                ConnectionImpl subConnection = new ConnectionImpl(syn.getDest_port());
 
-            ConnectionImpl subConnection = new ConnectionImpl(syn.getDest_port());
-
-            subConnection.remoteAddress = syn.getSrc_addr();
-            subConnection.remotePort = syn.getSrc_port();
+                subConnection.remoteAddress = syn.getSrc_addr();
+                subConnection.remotePort = syn.getSrc_port();
 
 
-            subConnection.state = State.ESTABLISHED;
+                subConnection.state = State.ESTABLISHED;
 
-            usedPorts.put(syn.getDest_port(), Boolean.TRUE);
+                usedPorts.put(syn.getDest_port(), Boolean.TRUE);
+            }
         }
         else {
             state = State.CLOSED;
@@ -155,6 +156,10 @@ public class ConnectionImpl extends AbstractConnection {
      * @see no.ntnu.fp.net.co.Connection#send(String)
      */
     public void send(String msg) throws ConnectException, IOException {
+        KtnDatagram packet = constructDataPacket(msg);
+        if (sendDataPacketWithRetransmit(packet) == null)
+            throw new IOException("No ack received");
+
         throw new NotImplementedException();
     }
 
