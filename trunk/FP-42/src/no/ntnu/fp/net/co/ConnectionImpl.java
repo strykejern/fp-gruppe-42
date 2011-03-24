@@ -83,8 +83,10 @@ public class ConnectionImpl extends AbstractConnection {
         KtnDatagram packet = constructInternalPacket(Flag.SYN);
         try {
             simplySendPacket(packet);
+            state = State.SYN_SENT;
         }
         catch (ClException e) {
+            state = State.CLOSED;
             //TODO: Something useful
         }
 
@@ -94,6 +96,7 @@ public class ConnectionImpl extends AbstractConnection {
             state = State.ESTABLISHED;
         }
         else {
+            state = State.CLOSED;
             //TODO: Something useful
         }
 
@@ -107,6 +110,25 @@ public class ConnectionImpl extends AbstractConnection {
      * @see Connection#accept()
      */
     public Connection accept() throws IOException, SocketTimeoutException {
+        state = State.LISTEN;
+
+        KtnDatagram syn = receivePacket(true);
+
+        if (syn.getFlag() == Flag.SYN){
+            state = State.SYN_RCVD;
+
+            sendAck(syn, true);
+
+            KtnDatagram ack = receiveAck();
+
+            remoteAddress = syn.getSrc_addr();
+            remotePort = syn.getSrc_port();
+            state = State.ESTABLISHED;
+        }
+        else {
+            //TODO: something useful
+        }
+
         throw new NotImplementedException();
     }
 
