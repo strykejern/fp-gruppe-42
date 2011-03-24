@@ -182,13 +182,13 @@ public class ConnectionImpl extends AbstractConnection {
 
         KtnDatagram packet = receivePacket(false);
 
+        sendAck(packet, false);
+
         if (packet.getFlag() == Flag.FIN){
             state = State.CLOSE_WAIT;
             close();
             return null;
         }
-        
-        sendAck(packet, false);
 
         return (String)packet.getPayload();
     }
@@ -200,7 +200,17 @@ public class ConnectionImpl extends AbstractConnection {
      */
     public void close() throws IOException {
         if (state == State.CLOSE_WAIT){
+            KtnDatagram fin = constructInternalPacket(Flag.FIN);
 
+            try {
+                simplySendPacket(fin);
+                state = State.LAST_ACK;
+            } catch (ClException e) {
+                //TODO: something useful
+            }
+
+            KtnDatagram ack = receiveAck();
+            state = State.CLOSED;
         }
         else {
             KtnDatagram fin = constructInternalPacket(Flag.FIN);
@@ -224,8 +234,9 @@ public class ConnectionImpl extends AbstractConnection {
             } catch (InterruptedException ex) {
 
             }
+
+            state = State.CLOSED;
         }
-        throw new NotImplementedException();
     }
 
     /**
