@@ -175,7 +175,12 @@ public class ConnectionImpl extends AbstractConnection {
      * @see AbstractConnection#sendAck(KtnDatagram, boolean)
      */
     public String receive() throws ConnectException, IOException {
+        if (state != state.ESTABLISHED)
+            throw new ConnectException("No connection established");
+
         KtnDatagram packet = receivePacket(false);
+        
+        sendAck(packet, false);
 
         return (String)packet.getPayload();
     }
