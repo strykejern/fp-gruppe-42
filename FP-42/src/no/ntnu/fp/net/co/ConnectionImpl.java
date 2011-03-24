@@ -12,6 +12,8 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
@@ -179,6 +181,12 @@ public class ConnectionImpl extends AbstractConnection {
             throw new ConnectException("No connection established");
 
         KtnDatagram packet = receivePacket(false);
+
+        if (packet.getFlag() == Flag.FIN){
+            state = State.CLOSE_WAIT;
+            close();
+            return null;
+        }
         
         sendAck(packet, false);
 
@@ -191,6 +199,32 @@ public class ConnectionImpl extends AbstractConnection {
      * @see Connection#close()
      */
     public void close() throws IOException {
+        if (state == State.CLOSE_WAIT){
+
+        }
+        else {
+            KtnDatagram fin = constructInternalPacket(Flag.FIN);
+            try {
+                simplySendPacket(fin);
+
+                state = State.FIN_WAIT_1;
+            } catch (ClException e) {
+                //TODO: something useful
+            }
+
+            KtnDatagram ack = receiveAck();
+            state = State.FIN_WAIT_2;
+
+            KtnDatagram fin2 = receivePacket(true);
+
+            sendAck(fin2, false);
+            state = State.TIME_WAIT;
+            try {
+                Thread.sleep(30000);
+            } catch (InterruptedException ex) {
+
+            }
+        }
         throw new NotImplementedException();
     }
 
