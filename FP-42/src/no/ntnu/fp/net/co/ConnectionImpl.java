@@ -180,15 +180,20 @@ public class ConnectionImpl extends AbstractConnection {
 
         KtnDatagram packet = receivePacket(false);
 
-        sendAck(packet, false);
+        if (isValid(packet)){
+            sendAck(packet, false);
+            return (String)packet.getPayload();
+        }
 
-        if (packet.getFlag() == Flag.FIN){
+        else if (packet.getFlag() == Flag.FIN){
             state = State.CLOSE_WAIT;
             close();
             return null;
         }
-
-        return (String)packet.getPayload();
+        else{
+            return null;
+        }
+        
     }
 
     /**
