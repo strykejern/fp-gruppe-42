@@ -99,7 +99,7 @@ public class Person {
 	 */
 	public Person(String username, String name, String email) {
 		this();
-		this.username = username
+		this.username = username;
                 this.name = name;
 		this.email = email;
 	}
