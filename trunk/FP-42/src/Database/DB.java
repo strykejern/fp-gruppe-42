@@ -14,6 +14,8 @@ package Database;
  */
 public class DB {
 
+    private static Connection dbConnection;
+
     public static void initializeDB
                 (String userName, String password, String databaseLocation)
             throws ClassNotFoundException, InstantiationException,
@@ -29,27 +31,41 @@ public class DB {
     }
 
 
-    public static Object getPerson() throws SQLException{
-        final String query = "SELECT * FROM menu ORDER BY dish_id ASC";
+    public static ArrayList getPersons() throws SQLException{
+        final String query = "SELECT * FROM bruker ORDER BY brukernavn ASC";
 
         Statement stat = dbConnection.createStatement();
         stat.executeQuery(query);
         ResultSet result = stat.getResultSet();
 
-        Menu m = new Menu();
+        ArrayList p = new ArrayList();
         while (result.next()){
-            int id          = result.getInt("dish_id");
-            String name     = result.getString("name");
-            int price       = result.getInt("price");
-            String comment  = result.getString("description");
-
-            m.addDish(new Dish(id, name, price, comment));
+            p.add(result.getString("brukernavn"));
         }
 
         result.close();
         stat.close();
 
-        return m;
+        return p;
+    }
+
+    public static Object getPerson(String brukernavn) throws SQLException{
+        final String query = "SELECT * FROM bruker WHERE brukernavn = "+brukernavn+"";
+
+        Statement stat = dbConnection.createStatement();
+        stat.executeQuery(query);
+        ResultSet result = stat.getResultSet();
+
+        if(result!=null){
+            String navn = result.getString("navn");
+            String mail = result.getString("mailadresse");
+        }
+
+        Person p = new Person(navn, mail);
+        result.close();
+        stat.close();
+
+        return p;
     }
 
  /*   public static void addAvtale(Avtale avtaler)
