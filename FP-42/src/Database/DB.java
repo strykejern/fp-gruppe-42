@@ -9,6 +9,6 @@ package Database;
  *
  * @author Snorre
  */
-public class Queries {
+public class DB {
 
 }
