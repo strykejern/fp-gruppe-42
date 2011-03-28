@@ -88,7 +88,7 @@ public class XmlSerializer {
 		if (element != null) {
 			date = parseDate(element.getValue());
 		}
-		return new Person(name, email, date);
+		return new Person(name, email);
 	}
 	
 	/**
