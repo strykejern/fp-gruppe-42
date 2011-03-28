@@ -95,7 +95,7 @@ public class DB {
 
         String query = "INSERT INTO Bruker "
                 + "(Brukernavn, Passord, Navn, Mailadresse) VALUES (" +
-                bruker.getUserName() + ", " +
+                bruker.getUsername() + ", " +
                 bruker.getPassword() + ", " +
                 bruker.getName() + ", " +
                 bruker.getEmail() + ",)";
