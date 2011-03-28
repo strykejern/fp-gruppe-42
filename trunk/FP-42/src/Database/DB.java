@@ -14,8 +14,22 @@ package Database;
  */
 public class DB {
 
+    public static void initializeDB
+                (String userName, String password, String databaseLocation)
+            throws ClassNotFoundException, InstantiationException,
+            IllegalAccessException, SQLException{
 
-      public static Object getPerson() throws SQLException{
+        if (dbConnection != null) {
+            dbConnection.close();
+        }
+        Class.forName("com.mysql.jdbc.Driver").newInstance();
+
+        dbConnection = DriverManager.getConnection(
+                databaseLocation, userName, password);
+    }
+
+
+    public static Object getPerson() throws SQLException{
         final String query = "SELECT * FROM menu ORDER BY dish_id ASC";
 
         Statement stat = dbConnection.createStatement();
@@ -38,13 +52,12 @@ public class DB {
         return m;
     }
 
-    public static void addAvtale(Avtale avtaler)
+ /*   public static void addAvtale(Avtale avtaler)
             throws SQLException {
 
 
         String query = "INSERT INTO avtale "
-                + "(A_ID, Oppretter, Starttidspunkt, Sluttidspunt, Beskrivelse, Sted, M_ID) VALUES (" +
-                generateA_ID() + ", " +
+                + "(Oppretter, Starttidspunkt, Sluttidspunt, Beskrivelse, Sted, M_ID) VALUES ("+
                 avtaler.moteleder.getName() + ", " +
                 avtaler.start + ", " +
                 avtaler.slutt + ", " +
@@ -56,4 +69,5 @@ public class DB {
 
         stat.executeUpdate(query);
     }
+  */
 }
