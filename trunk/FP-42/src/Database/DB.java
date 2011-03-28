@@ -7,6 +7,8 @@ package Database;
 
 import java.sql.*;
 import java.util.ArrayList;
+import no.ntnu.fp.model.Appointment;
+import no.ntnu.fp.model.MeetingRoom;
 import no.ntnu.fp.model.Person;
 
 /**
@@ -156,21 +158,7 @@ public class DB {
     
     public static ArrayList<Person> getParticipants(Appointment appointment, status st) 
             throws SQLException {
-        
-        if (st==status.ALL) {
-           String query = "SELECT * FROM Deltaker WHERE S_ID=" +appointment.getID() + ";";
-
-        }
-        else if(st == status.PARTICIPATING) {
-           query = query + "WHERE status=" + st + ";";
- 
-        }
-        else if(st == status.NOT_PARTICIPATING) {
-           
-        }
-        else if(st==status.NOT_ANSWERED) {
-           
-        }
+       String query = "SELECT * FROM Deltaker WHERE S_ID=" + appointment.getID() + "AND status=" + st + ";";
 
        Statement stat = dbConnection.createStatement();
        stat.executeUpdate(query);
@@ -179,16 +167,15 @@ public class DB {
 
        ArrayList<Person> p = new ArrayList<Person>();
        while (result.next()){
-            String name  = result.getString("name");
-            int size  = result.getInt("size");
+            String username  = result.getString("username");
 
-            r.add(getPerson(username));
+            p.add(getPerson(username));
         }
     } 
                       
     }
         
-    public static void removeParticipants () 
+    public static void removeParticipant() 
                throws SQLException {
         
     }
