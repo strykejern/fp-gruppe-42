@@ -17,7 +17,7 @@ public class Appointment {
     private String place;
     private MeetingRoom meetingRoom;
 
-    public Appointment(Person creator, int start, int end, String description, String place) {
+    public Appointment(Person creator,int id,Timespan time, String description, String place) {
         this.id = id;
         this.creator = creator;
         this.time = time;
@@ -25,7 +25,7 @@ public class Appointment {
         this.place = place;
     }
 
-    public Appointment(Person creator, int start, int end, MeetingRoom meetingRoom) {
+    public Appointment(Person creator, int id, Timespan time,String description, MeetingRoom meetingRoom) {
         this.id = id;
         this.creator = creator;
         this.time = time;
@@ -47,7 +47,22 @@ public class Appointment {
         this.place = place;
     }
 
-    
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public Timespan getTime() {
+        return time;
+    }
+
+    public void setTime(Timespan time) {
+        this.time = time;
+    }
 
     public Person getCreator() {
         return creator;
@@ -79,13 +94,5 @@ public class Appointment {
 
     public void setPlace(String place) {
         this.place = place;
-    }
-
-    public Timespan getTimespan() {
-        return time;
-    }
-
-    public void setTimespan(Timespan time) {
-        this.time = time;
     }
 }
