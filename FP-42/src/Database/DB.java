@@ -76,18 +76,18 @@ public class DB {
         
     }
 
-    public static void addAvtale(Avtale avtaler)
+    public static void addAppointment(no.ntnu.fp.model.Appointment appointment)
             throws SQLException {
 
 
         String query = "INSERT INTO avtale "
                 + "(Oppretter, Starttidspunkt, Sluttidspunt, Beskrivelse, Sted, M_ID) VALUES ("+
-                avtaler.moteleder.getName() + ", " +
-                avtaler.start + ", " +
-                avtaler.slutt + ", " +
-                avtaler.beskrivelse + ", " +
-                avtaler.sted + ", " +
-                avtaler.getM_ID() + ",)";
+                appointment.leader.getName() + ", " +
+                appointment.start + ", " +
+                appointment.end + ", " +
+                appointment.description + ", " +
+                appointment.place + ", " +
+                appointment.getM_ID() + ",)";
 
         Statement stat = dbConnection.createStatement();
 
@@ -110,15 +110,15 @@ public class DB {
         stat.executeUpdate(query);
     }
 
-    public static void addMoterom(Moterom rom)
+    public static void addMeetingRoom(no.ntnu.fp.model.MeetingRoom room)
             throws SQLException {
 
 
         String query = "INSERT INTO Moterom "
                 + "(M_ID, Navn, Storrelse) VALUES (" +
-                rom.getID() + ", " +
-                rom.getName() + ", " +
-                rom.getSize()  + ",)";
+                room.getID() + ", " +
+                room.getName() + ", " +
+                room.getSize()  + ",)";
 
         Statement stat = dbConnection.createStatement();
 
