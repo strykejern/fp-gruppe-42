@@ -11,4 +11,20 @@ package no.ntnu.fp.model;
  */
 public class MeetingRoom {
 
+    private int id;
+    private String name;
+    private int size;
+
+    public int getId() {
+        return id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public int getSize() {
+        return size;
+    }
+
 }
