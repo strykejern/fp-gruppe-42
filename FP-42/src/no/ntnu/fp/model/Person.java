@@ -33,6 +33,11 @@ public class Person {
 	 * This member variable holds a unique identifier for this object.
 	 */
 	private long id;
+
+        private String username;
+
+        private String password;
+
 	
 	/**
 	 * This member variable provides functionality for notifying of changes to
@@ -92,9 +97,10 @@ public class Person {
 	 * @param email The person's e-mail address
 	 * @param dateOfBirth The person's date of birth.
 	 */
-	public Person(String name, String email) {
+	public Person(String username, String name, String email) {
 		this();
-		this.name = name;
+		this.username = username
+                this.name = name;
 		this.email = email;
 	}
 	
@@ -233,6 +239,15 @@ public class Person {
 	public long getId() {
 		return id;
 	}
+
+        public String getPassword() {
+            return password;
+        }
+
+        public String getUsername() {
+            return username;
+        }
+
 
 	/**
 	 * Add a {@link java.beans.PropertyChangeListener} to the listener list.
