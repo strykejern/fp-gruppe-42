@@ -11,11 +11,8 @@ import java.net.UnknownHostException;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Random;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
+import no.ntnu.fp.net.admin.Log;
 
 import no.ntnu.fp.net.cl.ClException;
 import no.ntnu.fp.net.cl.ClSocket;
@@ -174,10 +171,16 @@ public class ConnectionImpl extends AbstractConnection {
      * @see AbstractConnection#sendAck(KtnDatagram, boolean)
      */
     public String receive() throws ConnectException, IOException {
+        Log.writeToLog("test", "recieve");
+        
         if (state != state.ESTABLISHED)
             throw new ConnectException("No connection established");
 
+        System.out.println("test1");
+
         KtnDatagram packet = receivePacket(false);
+
+        Log.writeToLog("test", "recieve");
 
         if (isValid(packet)){
             sendAck(packet, false);
@@ -250,6 +253,7 @@ public class ConnectionImpl extends AbstractConnection {
      * @return true if packet is free of errors, false otherwise.
      */
     protected boolean isValid(KtnDatagram packet) {
+        return true;/*
         if (packet.getChecksum() != packet.calculateChecksum()) return false;
 
         if (packet.getSeq_nr() != nextSequenceNo) return false;
@@ -262,6 +266,6 @@ public class ConnectionImpl extends AbstractConnection {
 
         if (packet.getSrc_port() != remotePort) return false;
 
-        return true;
+        return true;*/
     }
 }

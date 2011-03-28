@@ -7,11 +7,13 @@ package Server;
 
 import java.io.IOException;
 import java.net.ConnectException;
+import java.net.SocketTimeoutException;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import no.ntnu.fp.net.MessageListener;
 import no.ntnu.fp.net.ReceiveWorker;
+import no.ntnu.fp.net.admin.Log;
 import no.ntnu.fp.net.co.Connection;
 import no.ntnu.fp.net.co.ConnectionImpl;
 
@@ -27,10 +29,18 @@ public class Server implements MessageListener {
     }
 
     public void start(){
-        ConnectionImpl connListener = new ConnectionImpl(200);
+        ConnectionImpl connListener = new ConnectionImpl(20000);
+        ConnectionImpl clientConnection;
+        try {
+            clientConnection = (ConnectionImpl) connListener.accept();
+            System.out.println(clientConnection.receive());
+        } catch (IOException ex) {
+            Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        /*
         while(true){
             try {
-                Connection clientConnection = connListener.accept();
+                ConnectionImpl clientConnection = (ConnectionImpl)connListener.accept();
 
                 ReceiveWorker backgroundListener = new ReceiveWorker(clientConnection);
                 backgroundListener.addMessageListener(this); // TODO: lage listener
@@ -42,10 +52,11 @@ public class Server implements MessageListener {
 
             }
 
-        }
+        }*/
     }
 
     public void messageReceived(String message) {
+        System.out.println(message);
         for (ConnectionImpl receiver : listen){
             try {
                 receiver.send(message);
@@ -57,4 +68,9 @@ public class Server implements MessageListener {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
+    public static void main(String[] args) {
+        Log.setLogName("Server Log");
+        Server server = new Server();
+        server.start();
+    }
 }

@@ -3,6 +3,7 @@ package no.ntnu.fp.net;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import no.ntnu.fp.net.co.Connection;
 
 /**
  * Helper class implementing asynchronous handling of incoming messages.  Objects
