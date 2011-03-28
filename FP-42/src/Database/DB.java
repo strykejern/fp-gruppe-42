@@ -1,3 +1,5 @@
+package Database;
+
 /*
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
@@ -5,8 +7,6 @@
 
 import java.sql.*;
 import java.util.ArrayList;
-
-package Database;
 
 /**
  *
@@ -68,7 +68,7 @@ public class DB {
         return p;
     }
 
- /*   public static void addAvtale(Avtale avtaler)
+    public static void addAvtale(Avtale avtaler)
             throws SQLException {
 
 
@@ -85,5 +85,36 @@ public class DB {
 
         stat.executeUpdate(query);
     }
-  */
+
+    public static void addPerson(no.ntnu.fp.model.Person bruker)
+            throws SQLException {
+
+
+        String query = "INSERT INTO Bruker "
+                + "(Brukernavn, Passord, Navn, Mailadresse) VALUES (" +
+                bruker.getUserName() + ", " +
+                bruker.getPassword() + ", " +
+                bruker.getName() + ", " +
+                bruker.getEmail() + ",)";
+
+        Statement stat = dbConnection.createStatement();
+
+        stat.executeUpdate(query);
+    }
+
+    public static void addMoterom(Moterom rom)
+            throws SQLException {
+
+
+        String query = "INSERT INTO Moterom "
+                + "(M_ID, Navn, Storrelse) VALUES (" +
+                rom.getID() + ", " +
+                rom.getName() + ", " +
+                rom.getSize()  + ",)";
+
+        Statement stat = dbConnection.createStatement();
+
+        stat.executeUpdate(query);
+    }
+
 }
