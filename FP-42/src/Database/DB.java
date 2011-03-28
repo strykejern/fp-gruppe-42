@@ -116,7 +116,7 @@ public class DB {
 
         String query = "INSERT INTO Moterom "
                 + "(M_ID, Navn, Storrelse) VALUES (" +
-                room.getID() + ", " +
+                room.getId() + ", " +
                 room.getName() + ", " +
                 room.getSize()  + ",)";
 
