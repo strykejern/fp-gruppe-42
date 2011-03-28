@@ -59,13 +59,16 @@ public class DB {
         if(result!=null){
             String navn = result.getString("navn");
             String mail = result.getString("mailadresse");
-        }
+            no.ntnu.fp.model.Person p = new no.ntnu.fp.model.Person(brukernavn, navn, mail);
 
-        Person p = new Person(navn, mail);
-        result.close();
-        stat.close();
+            result.close();
+            stat.close();
 
-        return p;
+            return p;
+        } else throw new SQLException();
+
+        
+        
     }
 
     public static void addAvtale(Avtale avtaler)
