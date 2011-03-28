@@ -17,7 +17,7 @@ public class Appointment {
     private String place;
     private MeetingRoom meetingRoom;
 
-    public Appointment(Person creator,int id,Timespan time, String description, String place) {
+    public Appointment(int id, Person creator, Timespan time, String description, String place) {
         this.id = id;
         this.creator = creator;
         this.time = time;
@@ -25,7 +25,7 @@ public class Appointment {
         this.place = place;
     }
 
-    public Appointment(Person creator, int id, Timespan time,String description, MeetingRoom meetingRoom) {
+    public Appointment(int id, Person creator, Timespan time,String description, MeetingRoom meetingRoom) {
         this.id = id;
         this.creator = creator;
         this.time = time;
