@@ -7,6 +7,7 @@ package Database;
 
 import java.sql.*;
 import java.util.ArrayList;
+import no.ntnu.fp.model.Person;
 
 /**
  *
@@ -38,9 +39,13 @@ public class DB {
         stat.executeQuery(query);
         ResultSet result = stat.getResultSet();
 
-        ArrayList p = new ArrayList();
+        ArrayList<Person> p = new ArrayList<Person>();
         while (result.next()){
-            p.add(result.getString("brukernavn"));
+            String username  = result.getString("username");
+            String name  = result.getString("name");
+            String email  = result.getString("email");
+
+            p.add(new Person(username, name, email));
         }
 
         result.close();
