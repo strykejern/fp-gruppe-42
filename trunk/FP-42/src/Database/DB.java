@@ -82,12 +82,12 @@ public class DB {
 
         String query = "INSERT INTO avtale "
                 + "(Oppretter, Starttidspunkt, Sluttidspunt, Beskrivelse, Sted, M_ID) VALUES ("+
-                appointment.leader.getName() + ", " +
-                appointment.start + ", " +
-                appointment.end + ", " +
-                appointment.description + ", " +
-                appointment.place + ", " +
-                appointment.getM_ID() + ",)";
+                appointment.getCreator() + ", " +
+                appointment.getStart() + ", " +
+                appointment.getEnd() + ", " +
+                appointment.getDescription() + ", " +
+                appointment.getPlace() + ", " +
+                appointment.Meeting.getId() + ",)";
 
         Statement stat = dbConnection.createStatement();
 
