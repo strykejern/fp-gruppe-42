@@ -51,7 +51,6 @@ public class ConnectionImpl extends AbstractConnection {
         this.myPort = myPort;
         usedPorts.put(myPort, Boolean.TRUE);
         myAddress = getIPv4Address();
-        throw new NotImplementedException();
     }
 
     private String getIPv4Address() {
@@ -115,7 +114,7 @@ public class ConnectionImpl extends AbstractConnection {
 
         KtnDatagram syn = receivePacket(true);
 
-        if (syn.getFlag() == Flag.SYN){
+        if (syn != null && syn.getFlag() == Flag.SYN){
             state = State.SYN_RCVD;
 
             sendAck(syn, true);
