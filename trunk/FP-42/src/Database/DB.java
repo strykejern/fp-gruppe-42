@@ -120,4 +120,19 @@ public class DB {
         stat.executeUpdate(query);
     }
 
+    public static Moterom getMoterom (int size)
+             throws SQLException {
+       String query = "SELECT * FROM Moterom WHERE size>=" +size+ "ORDER BY size";
+
+       Statement stat = dbConnection.createStatement();
+
+       stat.executeUpdate(query);
+
+       ResultSet result = stat.getResultSet();
+
+       
+
+
+    }
+
 }
