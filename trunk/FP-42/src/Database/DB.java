@@ -16,7 +16,15 @@ import no.ntnu.fp.model.Person;
 public class DB {
 
     private static Connection dbConnection;
-
+    
+    public enum status{
+        ALL,
+        PARTICIPATING,
+        NOT_PARTICIPATING,
+        NOT_ANSWERED
+        
+    }
+    
     public static void initializeDB
                 (String userName, String password, String databaseLocation)
             throws ClassNotFoundException, InstantiationException,
@@ -62,8 +70,8 @@ public class DB {
         ResultSet result = stat.getResultSet();
 
         if(result!=null){
-            String navn = result.getString("navn");
-            String mail = result.getString("mailadresse");
+            String navn = result.getString("name");
+            String mail = result.getString("email");
             no.ntnu.fp.model.Person p = new no.ntnu.fp.model.Person(brukernavn, navn, mail);
 
             result.close();
@@ -76,7 +84,7 @@ public class DB {
         
     }
 
-    public static void addAppointment(no.ntnu.fp.model.Appointment appointment)
+    public static void addAppointment(Appointment appointment)
             throws SQLException {
 
 
@@ -110,7 +118,7 @@ public class DB {
         stat.executeUpdate(query);
     }
 
-    public static void addMeetingRoom(no.ntnu.fp.model.MeetingRoom room)
+    public static void addMeetingRoom(MeetingRoom room)
             throws SQLException {
 
 
@@ -125,19 +133,65 @@ public class DB {
         stat.executeUpdate(query);
     }
 
-    public static Moterom getMoterom (int size)
+    public static ArrayList<MeetingRoom> getMeetingRoom (int number)
              throws SQLException {
-       String query = "SELECT * FROM Moterom WHERE size>=" +size+ "ORDER BY size";
+       String query = "SELECT * FROM Moterom WHERE size>=" +number+ "ORDER BY size";
+       Statement stat = dbConnection.createStatement();
+       stat.executeUpdate(query);
+
+       ResultSet result = stat.getResultSet();
+       ArrayList<MeetingRoom> r = new ArrayList<MeetingRoom>();
+       while (result.next()){
+            String name  = result.getString("name");
+            int size  = result.getInt("size");
+
+            r.add(new MeetingRoom(name,size));
+        }
+
+    }
+    
+    public static void addParticipants () 
+               throws SQLException {
+        
+    }
+    
+    public static ArrayList<Person> getParticipants(Appointment appointment, status st) 
+            throws SQLException {
+        
+        if (st==status.ALL) {
+           String query = "SELECT * FROM Deltaker WHERE S_ID=" +appointment.getID() + ";";
+
+        }
+        else if(st == status.PARTICIPATING) {
+           query = query + "WHERE status=" + st + ";";
+ 
+        }
+        else if(st == status.NOT_PARTICIPATING) {
+           
+        }
+        else if(st==status.NOT_ANSWERED) {
+           
+        }
 
        Statement stat = dbConnection.createStatement();
-
        stat.executeUpdate(query);
 
        ResultSet result = stat.getResultSet();
 
-       
+       ArrayList<Person> p = new ArrayList<Person>();
+       while (result.next()){
+            String name  = result.getString("name");
+            int size  = result.getInt("size");
 
-
+            r.add(getPerson(username));
+        }
+    } 
+                      
+    }
+        
+    public static void removeParticipants () 
+               throws SQLException {
+        
     }
 
 }
