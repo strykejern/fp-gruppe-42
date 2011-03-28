@@ -92,11 +92,10 @@ public class Person {
 	 * @param email The person's e-mail address
 	 * @param dateOfBirth The person's date of birth.
 	 */
-	public Person(String name, String email, Date dateOfBirth) {
+	public Person(String name, String email) {
 		this();
 		this.name = name;
 		this.email = email;
-		this.dateOfBirth = dateOfBirth;
 	}
 	
 	/**
