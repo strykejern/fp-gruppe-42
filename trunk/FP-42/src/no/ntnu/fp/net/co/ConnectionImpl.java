@@ -117,14 +117,19 @@ public class ConnectionImpl extends AbstractConnection {
 
         KtnDatagram syn = receivePacket(true);
 
-        if (syn == null) throw new SocketTimeoutException();
-
-        remoteAddress = syn.getSrc_addr();
-        remotePort = syn.getSrc_port();
-
-        if (syn.getFlag() == Flag.SYN){
+        while (isValid(syn)){
+            if(syn.getFlag() == null) {
+                System.out.print("komm inn!");
+                syn = receivePacket(true);
+            }
+            else {
+                break;
+            }
+        }
+        
+        if (syn != null && syn.getFlag() == Flag.SYN){
             state = State.SYN_RCVD;
-
+            System.out.print("leke");
             sendAck(syn, true);
 
             KtnDatagram ack = receiveAck();
@@ -266,6 +271,14 @@ public class ConnectionImpl extends AbstractConnection {
      * @return true if packet is free of errors, false otherwise.
      */
     protected boolean isValid(KtnDatagram packet) {
+        switch(state) {
+            case CLOSED:
+                return false;
+            case LISTEN:
+                return true;
+             
+        }
+
         return true;/*
         if (packet.getChecksum() != packet.calculateChecksum()) return false;
 
