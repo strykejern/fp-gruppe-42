@@ -29,43 +29,38 @@ public class Server implements MessageListener {
     }
 
     public void start(){
-        ConnectionImpl connListener = new ConnectionImpl(20000);
-        ConnectionImpl clientConnection;
-        try {
-            clientConnection = (ConnectionImpl) connListener.accept();
-            System.out.println(clientConnection.receive());
-        } catch (IOException ex) {
-            Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        /*
+        ConnectionImpl connListener = new ConnectionImpl(2000);
+        
         while(true){
             try {
                 ConnectionImpl clientConnection = (ConnectionImpl)connListener.accept();
 
+                if (clientConnection == null) continue;
+
+                System.out.println("ping");
+
                 ReceiveWorker backgroundListener = new ReceiveWorker(clientConnection);
-                backgroundListener.addMessageListener(this); // TODO: lage listener
+                backgroundListener.addMessageListener(this);
                 backgroundListener.start();
 
-                listen.add(connListener);
+                listen.add(clientConnection);
 
             } catch (IOException e) {
-
             }
 
-        }*/
+        }
     }
 
     public void messageReceived(String message) {
         System.out.println(message);
-        for (ConnectionImpl receiver : listen){
+        /*for (ConnectionImpl receiver : listen){
             try {
                 receiver.send(message);
             } catch (ConnectException ex) {
                 listen.remove(receiver);
             } catch (IOException ex) {
             }
-        }
-        throw new UnsupportedOperationException("Not supported yet.");
+        }*/
     }
 
     public static void main(String[] args) {

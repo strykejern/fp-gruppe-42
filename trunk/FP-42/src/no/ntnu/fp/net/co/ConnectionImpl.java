@@ -3,6 +3,7 @@
  */
 package no.ntnu.fp.net.co;
 
+import java.io.EOFException;
 import java.io.IOException;
 import java.net.ConnectException;
 import java.net.InetAddress;
@@ -84,10 +85,15 @@ public class ConnectionImpl extends AbstractConnection {
         }
         catch (ClException e) {
             state = State.CLOSED;
+            System.out.println("fail");
+            return;
             //TODO: Something useful
         }
 
         KtnDatagram synAck = receiveAck();
+
+        if (synAck == null) throw new SocketTimeoutException();
+
         if (synAck.getFlag() == Flag.SYN_ACK) {
             sendAck(synAck, false);
             state = State.ESTABLISHED;
@@ -111,26 +117,32 @@ public class ConnectionImpl extends AbstractConnection {
 
         KtnDatagram syn = receivePacket(true);
 
-        if (syn != null && syn.getFlag() == Flag.SYN){
+        if (syn == null) throw new SocketTimeoutException();
+
+        remoteAddress = syn.getSrc_addr();
+        remotePort = syn.getSrc_port();
+
+        if (syn.getFlag() == Flag.SYN){
             state = State.SYN_RCVD;
 
             sendAck(syn, true);
 
             KtnDatagram ack = receiveAck();
 
-            if (ack != null){
-                ConnectionImpl subConnection = new ConnectionImpl(syn.getDest_port());
+            if (ack == null) throw new SocketTimeoutException();
 
-                subConnection.remoteAddress = syn.getSrc_addr();
-                subConnection.remotePort = syn.getSrc_port();
+            ConnectionImpl subConnection = new ConnectionImpl(syn.getDest_port());
+
+            subConnection.remoteAddress = syn.getSrc_addr();
+            subConnection.remotePort = syn.getSrc_port();
 
 
-                subConnection.state = State.ESTABLISHED;
+            subConnection.state = State.ESTABLISHED;
 
-                usedPorts.put(syn.getDest_port(), Boolean.TRUE);
+            usedPorts.put(syn.getDest_port(), Boolean.TRUE);
 
-                return subConnection;
-            }
+            return subConnection;
+            
         }
         else {
             state = State.CLOSED;
@@ -171,26 +183,25 @@ public class ConnectionImpl extends AbstractConnection {
      * @see AbstractConnection#sendAck(KtnDatagram, boolean)
      */
     public String receive() throws ConnectException, IOException {
-        Log.writeToLog("test", "recieve");
         
         if (state != state.ESTABLISHED)
             throw new ConnectException("No connection established");
 
-        System.out.println("test1");
+        KtnDatagram packet;
+        try {
+            packet = receivePacket(false);
+        }
+        catch (EOFException e) {
+            state = State.CLOSE_WAIT;
+            close();
+            return null;
+        }
 
-        KtnDatagram packet = receivePacket(false);
-
-        Log.writeToLog("test", "recieve");
+        if (packet == null) throw new SocketTimeoutException();
 
         if (isValid(packet)){
             sendAck(packet, false);
             return (String)packet.getPayload();
-        }
-
-        else if (packet.getFlag() == Flag.FIN){
-            state = State.CLOSE_WAIT;
-            close();
-            return null;
         }
         else{
             return null;
@@ -231,6 +242,8 @@ public class ConnectionImpl extends AbstractConnection {
             state = State.FIN_WAIT_2;
 
             KtnDatagram fin2 = receivePacket(true);
+
+            if (fin2 == null) throw new SocketTimeoutException();
 
             sendAck(fin2, false);
             state = State.TIME_WAIT;

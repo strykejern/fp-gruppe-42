@@ -24,9 +24,9 @@ public class Client {
     public Client(){
         conn = new ConnectionImpl(201);
         try {
-            conn.connect(Inet4Address.getByAddress(new byte[]{78, 91, 1, 111}), 2000);
+            conn.connect(Inet4Address.getLocalHost(), 2000);
         } catch (IOException ex) {
-
+            System.out.println("Client: " + ex.toString());
         }
     }
 
@@ -38,8 +38,16 @@ public class Client {
         }
     }
 
+    public void close(){
+        try {
+            conn.close();
+        } catch (IOException ex) {
+        }
+    }
+
     public static void main(String[] args) {
         Client c = new Client();
         c.sendMessage("lol");
+        c.close();
     }
 }
