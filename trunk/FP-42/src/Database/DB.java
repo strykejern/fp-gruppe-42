@@ -86,6 +86,34 @@ public class DB {
         
     }
 
+    public static void addPerson(Person bruker)
+            throws SQLException {
+
+
+        String query = "INSERT INTO Bruker "
+                + "(Brukernavn, Passord, Navn, Mailadresse) VALUES (" +
+                bruker.getUsername() + ", " +
+                bruker.getPassword() + ", " +
+                bruker.getName() + ", " +
+                bruker.getEmail() + ",)";
+
+        Statement stat = dbConnection.createStatement();
+
+        stat.executeUpdate(query);
+    }
+
+    public static void removePerson(no.ntnu.fp.model.Person bruker)
+            throws SQLException {
+
+
+        String query = "DELETE * FROM bruker WHERE brukernavn="+bruker.getUsername();
+
+        Statement stat = dbConnection.createStatement();
+
+        stat.executeUpdate(query);
+
+    }
+
     public static void addAppointment(Appointment appointment)
             throws SQLException {
 
@@ -103,21 +131,7 @@ public class DB {
         stat.executeUpdate(query);
     }
 
-    public static void addPerson(Person bruker)
-            throws SQLException {
-
-
-        String query = "INSERT INTO Bruker "
-                + "(Brukernavn, Passord, Navn, Mailadresse) VALUES (" +
-                bruker.getUsername() + ", " +
-                bruker.getPassword() + ", " +
-                bruker.getName() + ", " +
-                bruker.getEmail() + ",)";
-
-        Statement stat = dbConnection.createStatement();
-
-        stat.executeUpdate(query);
-    }
+   
 
     public static void addMeetingRoom(MeetingRoom room)
             throws SQLException {
@@ -147,7 +161,9 @@ public class DB {
             int size  = result.getInt("size");
 
             r.add(new MeetingRoom(name,size));
-        }
+       }
+
+       return r;
 
     }
     
@@ -186,17 +202,7 @@ public class DB {
                       
     
 
-    public static void removePerson(no.ntnu.fp.model.Person bruker)
-            throws SQLException {
-
-
-        String query = "DELETE * FROM bruker WHERE brukernavn="+bruker.getUsername();
-
-        Statement stat = dbConnection.createStatement();
-
-        stat.executeUpdate(query);
-
-    }
+    
         
     public static void removeParticipant() 
                throws SQLException {
