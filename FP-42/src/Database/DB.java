@@ -9,6 +9,7 @@ import java.sql.*;
 import java.util.ArrayList;
 import no.ntnu.fp.model.Appointment;
 import no.ntnu.fp.model.MeetingRoom;
+import no.ntnu.fp.model.Message;
 import no.ntnu.fp.model.Person;
 
 /**
@@ -74,7 +75,7 @@ public class DB {
         if(result!=null){
             String navn = result.getString("name");
             String mail = result.getString("email");
-            no.ntnu.fp.model.Person p = new Person(brukernavn, navn, mail);
+            Person p = new Person(brukernavn, navn, mail);
 
             result.close();
             stat.close();
@@ -228,4 +229,51 @@ public class DB {
         
     }
 
+    public static void addMessage(Message message, Person til, Person fra)
+                throws SQLException {
+        String query = "INSERT INTO Melding "
+                + "(Til, Fra, Emne, Tekst) VALUES ("+
+                til.getUsername()+", "+
+                fra.getUsername()+", "+
+                message.getSubject()+", "+
+                message.getContent()+",)";
+
+        Statement stat = dbConnection.createStatement();
+        stat.executeUpdate(query);
+
+
+    }
+
+    public static Message getMessage(int id)
+                throws SQLException{
+
+        String query = "SELECT * FROM Melding WHERE M_ID= "+id;
+
+        Statement stat = dbConnection.createStatement();
+        stat.executeUpdate(query);
+
+        ResultSet result = stat.getResultSet();
+
+        if(result!=null){
+            String subject = result.getString("Emne");
+            String content = result.getString("Tekst");
+            Message m = new Message(subject, content);
+
+            result.close();
+            stat.close();
+
+            return m;
+         } else throw new SQLException();
+    }
+
+    public static void removemessage(int id)
+                throws SQLException{
+        String query = "DELETE * FROM Melding WHERE M_ID= "+id;
+
+        Statement stat = dbConnection.createStatement();
+        stat.executeUpdate(query);
+    }
+
 }
+
+
