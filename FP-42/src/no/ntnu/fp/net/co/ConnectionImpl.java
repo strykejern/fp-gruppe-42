@@ -125,7 +125,7 @@ public class ConnectionImpl extends AbstractConnection {
         
         if (syn != null && syn.getFlag() == Flag.SYN){
             state = State.SYN_RCVD;
-            System.out.print("leke");
+            
             sendAck(syn, true);
 
             KtnDatagram ack = receiveAck();
