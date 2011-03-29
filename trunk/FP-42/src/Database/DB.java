@@ -131,7 +131,16 @@ public class DB {
         stat.executeUpdate(query);
     }
 
-   
+    public static void removeAppointment(Appointment appointment)
+            throws SQLException {
+        String query = "DELETE * FROM avtale WHERE S_ID=" + appointment.getId() + ";";
+        Statement stat = dbConnection.createStatement();
+
+        stat.executeUpdate(query);
+    }
+    
+    public static void addPerson(Person bruker)
+            throws SQLException {
 
     public static void addMeetingRoom(MeetingRoom room)
             throws SQLException {
@@ -166,15 +175,23 @@ public class DB {
        return r;
 
     }
+
+    public static void removeMeetingRoom (MeetingRoom meetingroom)
+              throws SQLException {
+       String query = "DELETE * FROM Moterom WHERE M_ID=" + meetingroom.getId() + ";";
+       Statement stat = dbConnection.createStatement();
+       stat.executeUpdate(query);
+
+
+    }
     
     public static void addParticipants (Person person, Appointment appointment)
                throws SQLException {
          String query = "INSERT INTO Deltaker "
                 + "(Brukernavn, S_ID, Status) VALUES (" +
-                bruker.getUsername() + ", " +
-                bruker.getPassword() + ", " +
-                bruker.getName() + ", " +
-                bruker.getEmail() + ",)";
+                person.getUsername() + ", " +
+                appointment.getId() + ", " +
+                status.NOT_ANSWERED + ",)";
 
         Statement stat = dbConnection.createStatement();
 
@@ -184,7 +201,7 @@ public class DB {
     public static ArrayList<Person> getParticipants(Appointment appointment, status st)
             throws SQLException {
        String query = "SELECT * FROM Deltaker WHERE S_ID=" +
-               appointment.getID() + "AND status=" + st + ";";
+               appointment.getId() + "AND status=" + st + ";";
 
        Statement stat = dbConnection.createStatement();
        stat.executeUpdate(query);
@@ -199,8 +216,6 @@ public class DB {
        }
        return p;
     } 
-                      
-    
 
     
         
