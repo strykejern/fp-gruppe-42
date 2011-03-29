@@ -15,6 +15,12 @@ public class MeetingRoom {
     private String name;
     private int size;
 
+    public MeetingRoom(String name, int size) {
+
+        this.name = name;
+        this.size = size;
+    }
+
     public int getId() {
         return id;
     }
