@@ -158,7 +158,8 @@ public class DB {
     
     public static ArrayList<Person> getParticipants(Appointment appointment, status st) 
             throws SQLException {
-       String query = "SELECT * FROM Deltaker WHERE S_ID=" + appointment.getID() + "AND status=" + st + ";";
+       String query = "SELECT * FROM Deltaker WHERE S_ID=" +
+               appointment.getID() + "AND status=" + st + ";";
 
        Statement stat = dbConnection.createStatement();
        stat.executeUpdate(query);
@@ -173,6 +174,18 @@ public class DB {
         }
     } 
                       
+    }
+
+public static void removePerson(no.ntnu.fp.model.Person bruker)
+            throws SQLException {
+
+
+        String query = "DELETE * FROM bruker WHERE brukernavn="+bruker.getUsername()
+
+        Statement stat = dbConnection.createStatement();
+
+        stat.executeUpdate(query);
+
     }
         
     public static void removeParticipant() 
