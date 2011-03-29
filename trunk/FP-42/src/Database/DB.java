@@ -204,8 +204,12 @@ public class DB {
 
     
         
-    public static void removeParticipant() 
+    public static void removeParticipant(Person person)
                throws SQLException {
+        String query = "DELETE * FROM Deltaker WHERE brukernavn="+person.getUsername();
+
+        Statement stat = dbConnection.createStatement();
+        stat.executeUpdate(query);
         
     }
 
