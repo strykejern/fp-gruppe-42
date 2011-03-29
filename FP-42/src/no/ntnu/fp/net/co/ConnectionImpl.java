@@ -80,8 +80,10 @@ public class ConnectionImpl extends AbstractConnection {
 
         KtnDatagram packet = constructInternalPacket(Flag.SYN);
         try {
+            
             simplySendPacket(packet);
             state = State.SYN_SENT;
+
         }
         catch (ClException e) {
             state = State.CLOSED;
@@ -115,19 +117,12 @@ public class ConnectionImpl extends AbstractConnection {
 
         state = State.LISTEN;
 
-        KtnDatagram syn = receivePacket(true);
+        KtnDatagram syn = null;
 
-        boolean test = true;
+       
 
-        while (test){
-            try{
+        while (!isValid(syn)){
                 syn = receivePacket(true);
-                syn.getFlag();
-                break;
-            } catch(NullPointerException e){
-                continue;
-            }
-            
         }
         
         if (syn != null && syn.getFlag() == Flag.SYN){
@@ -177,6 +172,7 @@ public class ConnectionImpl extends AbstractConnection {
         if (state != state.ESTABLISHED) {
             throw new ConnectException("No connection established");
         }
+        
         KtnDatagram packet = constructDataPacket(msg);
         if (sendDataPacketWithRetransmit(packet) == null)
             throw new IOException("No ack received");
@@ -274,16 +270,43 @@ public class ConnectionImpl extends AbstractConnection {
      * @return true if packet is free of errors, false otherwise.
      */
     protected boolean isValid(KtnDatagram packet) {
+        if (packet == null || packet.calculateChecksum() != packet.getChecksum()) {
+            return false;
+        }
+
         switch(state) {
             case CLOSED:
                 return false;
             case LISTEN:
-                if(!packet.getDest_addr().equals(null)) return false;
                 return true;
-             
+            case SYN_SENT:
+                // Sjekker ip og flag er riktig
+                return packet.getDest_addr().equals(this.remoteAddress)&& packet.getFlag()==Flag.SYN_ACK;
+            case SYN_RCVD:
+                return packet.getFlag()==Flag.ACK;
+            case CLOSE_WAIT:
+                return this.state == State.ESTABLISHED && packet.getFlag()==Flag.FIN;
+            case FIN_WAIT_1:
+                return this.state == State.ESTABLISHED;
+            case FIN_WAIT_2:
+                return packet.getFlag() == Flag.ACK && this.state == State.FIN_WAIT_1;
+            case ESTABLISHED:
+                if(this.state == State.SYN_SENT && packet.getFlag() == Flag.SYN_ACK) {
+                    return true;
+                }
+                else if(this.state == State.SYN_RCVD && packet.getFlag() == Flag.SYN ) {
+                    return true;
+                }
+                else {
+                    return false;
+                }
+            case LAST_ACK:
+                return this.state == State.CLOSE_WAIT;
+            case TIME_WAIT:
+                return this.state == State.FIN_WAIT_2 && packet.getFlag() == Flag.FIN;
         }
-
-        return true;/*
+        return false;
+        /*
         if (packet.getChecksum() != packet.calculateChecksum()) return false;
 
         if (packet.getSeq_nr() != nextSequenceNo) return false;
