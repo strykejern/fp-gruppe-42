@@ -117,9 +117,16 @@ public class ConnectionImpl extends AbstractConnection {
 
         KtnDatagram syn = receivePacket(true);
 
-        while (isValid(syn)){
-            
+        boolean test = true;
+
+        while (test){
+            try{
                 syn = receivePacket(true);
+                syn.getFlag();
+                break;
+            } catch(NullPointerException e){
+                continue;
+            }
             
         }
         
@@ -271,6 +278,7 @@ public class ConnectionImpl extends AbstractConnection {
             case CLOSED:
                 return false;
             case LISTEN:
+                if(!packet.getDest_addr().equals(null)) return false;
                 return true;
              
         }
