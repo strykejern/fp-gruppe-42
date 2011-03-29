@@ -42,7 +42,7 @@ public class DB {
     }
 
 
-    public static ArrayList getPersons() throws SQLException{
+    public static ArrayList<Person> getPersons() throws SQLException{
         final String query = "SELECT * FROM bruker ORDER BY brukernavn ASC";
 
         Statement stat = dbConnection.createStatement();
@@ -64,7 +64,7 @@ public class DB {
         return p;
     }
 
-    public static Object getPerson(String brukernavn) throws SQLException{
+    public static Person getPerson(String brukernavn) throws SQLException{
         final String query = "SELECT * FROM bruker WHERE brukernavn = "+brukernavn+"";
 
         Statement stat = dbConnection.createStatement();
@@ -74,7 +74,7 @@ public class DB {
         if(result!=null){
             String navn = result.getString("name");
             String mail = result.getString("email");
-            no.ntnu.fp.model.Person p = new no.ntnu.fp.model.Person(brukernavn, navn, mail);
+            no.ntnu.fp.model.Person p = new Person(brukernavn, navn, mail);
 
             result.close();
             stat.close();
@@ -86,7 +86,7 @@ public class DB {
         
     }
 
-    public static void addAppointment(no.ntnu.fp.model.Appointment appointment)
+    public static void addAppointment(Appointment appointment)
             throws SQLException {
 
 
@@ -103,7 +103,7 @@ public class DB {
         stat.executeUpdate(query);
     }
 
-    public static void addPerson(no.ntnu.fp.model.Person bruker)
+    public static void addPerson(Person bruker)
             throws SQLException {
 
 
@@ -119,7 +119,7 @@ public class DB {
         stat.executeUpdate(query);
     }
 
-    public static void addMeetingRoom(no.ntnu.fp.model.MeetingRoom room)
+    public static void addMeetingRoom(MeetingRoom room)
             throws SQLException {
 
 
@@ -151,9 +151,18 @@ public class DB {
 
     }
     
-    public static void addParticipants () 
+    public static void addParticipants (Person person, Appointment appointment)
                throws SQLException {
-        
+         String query = "INSERT INTO Deltaker "
+                + "(Brukernavn, S_ID, Status) VALUES (" +
+                bruker.getUsername() + ", " +
+                bruker.getPassword() + ", " +
+                bruker.getName() + ", " +
+                bruker.getEmail() + ",)";
+
+        Statement stat = dbConnection.createStatement();
+
+        stat.executeUpdate(query);
     }
     
     public static ArrayList<Person> getParticipants(Appointment appointment, status st) 
