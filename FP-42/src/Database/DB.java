@@ -140,8 +140,6 @@ public class DB {
         stat.executeUpdate(query);
     }
     
-    public static void addPerson(Person bruker)
-            throws SQLException {
 
     public static void addMeetingRoom(MeetingRoom room)
             throws SQLException {
