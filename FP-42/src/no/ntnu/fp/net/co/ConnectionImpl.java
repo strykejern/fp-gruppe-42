@@ -118,13 +118,9 @@ public class ConnectionImpl extends AbstractConnection {
         KtnDatagram syn = receivePacket(true);
 
         while (isValid(syn)){
-            if(syn.getFlag() == null) {
-                System.out.print("komm inn!");
+            
                 syn = receivePacket(true);
-            }
-            else {
-                break;
-            }
+            
         }
         
         if (syn != null && syn.getFlag() == Flag.SYN){
