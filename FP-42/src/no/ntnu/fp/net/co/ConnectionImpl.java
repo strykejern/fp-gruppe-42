@@ -125,6 +125,9 @@ public class ConnectionImpl extends AbstractConnection {
                 syn = receivePacket(true);
         }
         
+        this.remoteAddress = syn.getSrc_addr();
+        this.remotePort = syn.getSrc_port();
+
         if (syn != null && syn.getFlag() == Flag.SYN){
             state = State.SYN_RCVD;
             
