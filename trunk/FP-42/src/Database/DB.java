@@ -237,10 +237,10 @@ public class DB {
         stat.executeUpdate(query);
     }
     
-    public static ArrayList<Person> getParticipants(Appointment appointment, status st)
+    public static ArrayList<Person> getParticipants(Meeting meeting, status st)
             throws SQLException {
        String query = "SELECT * FROM Deltaker WHERE S_ID=" +
-               appointment.getId() + "AND status=" + st + ";";
+               meeting.getId() + "AND status=" + st + ";";
 
        Statement stat = dbConnection.createStatement();
        stat.executeUpdate(query);
@@ -256,6 +256,18 @@ public class DB {
        return p;
     } 
 
+    public static void changeStatus(Person person, Meeting meeting, status st)
+        throws SQLException{
+        String query = "INSERT INTO Deltaker WHERE Brukernavn=" + person.getUsername()
+                + "AND M_ID=" + meeting.getId()
+                + "(Status) VALUES ("
+                + st
+                +",)";
+
+        Statement stat = dbConnection.createStatement();
+        stat.executeUpdate(query);
+
+    }
     
         
     public static void removeParticipant(Person person)
