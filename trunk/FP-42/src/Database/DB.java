@@ -8,6 +8,7 @@ package Database;
 import java.sql.*;
 import java.util.ArrayList;
 import no.ntnu.fp.model.Appointment;
+import no.ntnu.fp.model.Meeting;
 import no.ntnu.fp.model.MeetingRoom;
 import no.ntnu.fp.model.Message;
 import no.ntnu.fp.model.Person;
@@ -115,12 +116,13 @@ public class DB {
 
     }
 
-    public static void addAppointment(Appointment appointment)
+    public static void addAppointment(Appointment appointment, boolean mote)
             throws SQLException {
 
 
         String query = "INSERT INTO avtale "
-                + "(Oppretter, Starttidspunkt, Sluttidspunt, Beskrivelse, Sted, M_ID) VALUES ("+
+                + "(Mote, Oppretter, Starttidspunkt, Sluttidspunt, Beskrivelse, Sted, M_ID) VALUES ("+
+                mote + "," +
                 appointment.getCreator() + ", " +
                 appointment.getTime() + ", " +
                 appointment.getDescription() + ", " +
@@ -146,6 +148,25 @@ public class DB {
 
 
             a.add(new Appointment());
+        }
+
+        return a;
+    }
+
+        public static ArrayList<Meeting> getMeetings(Person person)
+                throws SQLException {
+        String query = "SELECT * FROM avtale, deltaker WHERE Mote=TRUE AND (Oppretter=" + person.getUsername() +
+                "OR (avtale.S_ID=deltaker.S_ID AND deltaker.brukernavn=" + person.getUsername() + "));";
+        Statement stat = dbConnection.createStatement();
+
+        stat.executeUpdate(query);
+
+        ResultSet result = stat.getResultSet();
+        ArrayList<Meeting> a = new ArrayList<Meeting>();
+        while (result.next()){
+            
+
+            a.add(new Meeting());
         }
 
         return a;
