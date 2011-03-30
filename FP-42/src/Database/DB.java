@@ -132,6 +132,25 @@ public class DB {
         stat.executeUpdate(query);
     }
 
+    public static ArrayList<Appointment> getAppointments(Person person)
+                throws SQLException {
+        String query = "SELECT * FROM avtale, deltaker WHERE avtale.Oppretter=" + person.getUsername() +
+                "OR (avtale.S_ID=deltaker.S_ID AND deltaker.brukernavn=" + person.getUsername() + ");";
+        Statement stat = dbConnection.createStatement();
+
+        stat.executeUpdate(query);
+
+        ResultSet result = stat.getResultSet();
+        ArrayList<Appointment> a = new ArrayList<Appointment>();
+        while (result.next()){
+
+
+            a.add(new Appointment());
+        }
+
+        return a;
+    }
+
     public static void removeAppointment(Appointment appointment)
             throws SQLException {
         String query = "DELETE * FROM avtale WHERE S_ID=" + appointment.getId() + ";";

@@ -14,5 +14,5 @@ import java.util.ArrayList;
 public class Calendar {
 
     private ArrayList<Meeting> meetings;
-    private Arraylist<Appointment> appointments;
+    private ArrayList<Appointment> appointments;
 }
