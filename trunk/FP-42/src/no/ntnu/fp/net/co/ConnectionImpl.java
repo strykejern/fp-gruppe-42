@@ -97,7 +97,9 @@ public class ConnectionImpl extends AbstractConnection {
         if (synAck == null) throw new SocketTimeoutException();
 
         if (synAck.getFlag() == Flag.SYN_ACK) {
+            System.out.println("Kjører her!!" + synAck.getFlag());
             sendAck(synAck, false);
+            
             state = State.ESTABLISHED;
         }
         else {
@@ -132,9 +134,11 @@ public class ConnectionImpl extends AbstractConnection {
             state = State.SYN_RCVD;
             
             sendAck(syn, true);
-
-            KtnDatagram ack = receiveAck();
-
+            KtnDatagram ack;
+            do {
+                ack = receivePacket(true);
+            } while(ack == null || ack.getFlag() == KtnDatagram.Flag.ACK);
+            
             if (ack == null) throw new SocketTimeoutException();
 
             ConnectionImpl subConnection = new ConnectionImpl(syn.getDest_port());
@@ -203,6 +207,8 @@ public class ConnectionImpl extends AbstractConnection {
             close();
             return null;
         }
+
+        System.out.println("Hello" + packet.toString());
 
         if (packet == null) throw new SocketTimeoutException();
 
