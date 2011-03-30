@@ -13,7 +13,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-import no.ntnu.fp.net.admin.Log;
 
 import no.ntnu.fp.net.cl.ClException;
 import no.ntnu.fp.net.cl.ClSocket;
@@ -194,13 +193,15 @@ public class ConnectionImpl extends AbstractConnection {
      * @see AbstractConnection#sendAck(KtnDatagram, boolean)
      */
     public String receive() throws ConnectException, IOException {
-        
         if (state != state.ESTABLISHED)
             throw new ConnectException("No connection established");
 
         KtnDatagram packet;
         try {
             packet = receivePacket(false);
+            if(isValid(packet)){
+                sendAck(packet, false);
+            }
         }
         catch (EOFException e) {
             state = State.CLOSE_WAIT;
