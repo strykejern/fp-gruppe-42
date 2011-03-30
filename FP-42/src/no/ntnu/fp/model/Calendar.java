@@ -5,6 +5,8 @@
 
 package no.ntnu.fp.model;
 
+import Database.DB;
+import java.sql.SQLException;
 import java.util.ArrayList;
 
 /**
@@ -13,6 +15,24 @@ import java.util.ArrayList;
  */
 public class Calendar {
 
+    private Person bruker;
     private ArrayList<Meeting> meetings;
     private ArrayList<Appointment> appointments;
+
+    public Calendar (Person bruker) {
+        this.bruker = bruker;
+
+    }
+
+    public boolean logOn(String brukernavn, String passord)
+        throws SQLException {
+        Person bruker = DB.getPerson(brukernavn);
+        if (bruker.getPassword() == passord) {
+            Calendar c = new Calendar(bruker);
+            return true;
+        }
+    }
+
+
+
 }
