@@ -19,8 +19,11 @@ public class Calendar {
     private ArrayList<Meeting> meetings;
     private ArrayList<Appointment> appointments;
 
-    public Calendar (Person bruker) {
+    public Calendar (Person bruker)
+        throws SQLException {
         this.bruker = bruker;
+        this.meetings = DB.getMeetings(bruker);
+        this.appointments = DB.getAppointments(bruker);
 
     }
 

@@ -5,6 +5,9 @@
 
 package no.ntnu.fp.model;
 
+import java.sql.SQLException;
+
+
 /**
  *
  * @author Anders
