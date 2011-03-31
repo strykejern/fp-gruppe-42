@@ -69,6 +69,7 @@ public class Server implements MessageListener {
 
                 break;
             } catch (IOException e) {
+                System.out.println(e.getMessage());
             }
 
         }

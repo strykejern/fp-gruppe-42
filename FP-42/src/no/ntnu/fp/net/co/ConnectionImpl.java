@@ -121,9 +121,7 @@ public class ConnectionImpl extends AbstractConnection {
 
         state = State.LISTEN;
 
-        KtnDatagram syn = null;
-
-       
+        KtnDatagram syn = receivePacket(true);
 
         while (!isValid(syn)){
                 syn = receivePacket(true);
@@ -136,10 +134,7 @@ public class ConnectionImpl extends AbstractConnection {
             state = State.SYN_RCVD;
             
             sendAck(syn, true);
-            KtnDatagram ack;
-            do {
-                ack = receivePacket(true);
-            } while(ack == null || ack.getFlag() == KtnDatagram.Flag.ACK);
+            KtnDatagram ack = receiveAck();
             
             if (ack == null) throw new SocketTimeoutException();
 
@@ -203,7 +198,14 @@ public class ConnectionImpl extends AbstractConnection {
 
         KtnDatagram packet;
         try {
+
             packet = receivePacket(false);
+
+            while (packet == null){
+                System.out.println("Packet was null, retrying");
+                packet = receivePacket(false);
+            }
+
         }
         catch (EOFException e) {
             System.out.println("*** " + e.getMessage() + " ***");
@@ -212,7 +214,7 @@ public class ConnectionImpl extends AbstractConnection {
             return null;
         }
 
-        System.out.println("Hello" + packet.toString());
+        System.out.println("Packet received");
 
         if (packet == null) throw new SocketTimeoutException();
 
@@ -223,7 +225,9 @@ public class ConnectionImpl extends AbstractConnection {
             return null;
         }
 
-        if (isValid(packet)){
+        System.out.println("Checking packet...");
+
+        if (true){
             System.out.println("pong");
             sendAck(packet, false);
             return (String)packet.getPayload();
@@ -263,6 +267,12 @@ public class ConnectionImpl extends AbstractConnection {
 
             System.out.print("Receiving last ack... ");
             KtnDatagram lastAck = receiveAck();
+            long timer = System.currentTimeMillis();
+
+            while (lastAck == null || System.currentTimeMillis() - timer > 1000) {
+                System.out.println("Failed to retrieve last ack, retrying");
+                lastAck = receiveAck();
+            }
 
             if (lastAck == null) throw new SocketTimeoutException();
 
