@@ -201,7 +201,9 @@ public class ConnectionImpl extends AbstractConnection {
 
             packet = receivePacket(false);
 
-            while (packet == null){
+            long time = System.currentTimeMillis();
+
+            while (packet == null && System.currentTimeMillis() - time < 1000){
                 System.out.println("Packet was null, retrying");
                 packet = receivePacket(false);
             }
@@ -269,7 +271,7 @@ public class ConnectionImpl extends AbstractConnection {
             KtnDatagram lastAck = receiveAck();
             long timer = System.currentTimeMillis();
 
-            while (lastAck == null || System.currentTimeMillis() - timer > 1000) {
+            while (lastAck == null && System.currentTimeMillis() - timer < 1000) {
                 System.out.println("Failed to retrieve last ack, retrying");
                 lastAck = receiveAck();
             }
