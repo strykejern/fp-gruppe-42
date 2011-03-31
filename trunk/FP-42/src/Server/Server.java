@@ -6,15 +6,11 @@
 package Server;
 
 import java.io.IOException;
-import java.net.ConnectException;
-import java.net.SocketTimeoutException;
 import java.util.ArrayList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import no.ntnu.fp.net.MessageListener;
 import no.ntnu.fp.net.ReceiveWorker;
 import no.ntnu.fp.net.admin.Log;
-import no.ntnu.fp.net.co.Connection;
+import no.ntnu.fp.net.co.AbstractConnection.State;
 import no.ntnu.fp.net.co.ConnectionImpl;
 
 /**
@@ -51,6 +47,33 @@ public class Server implements MessageListener {
         }
     }
 
+    public void startDebug(){
+        ConnectionImpl connListener = new ConnectionImpl(2000);
+
+        while(true){
+            try {
+                ConnectionImpl clientConnection = (ConnectionImpl)connListener.accept();
+
+                if (clientConnection == null) continue;
+
+                while (clientConnection.getState() != State.CLOSED){
+                    String input = clientConnection.receive();
+
+                    if (input == null){
+                        System.out.println("Failed receive");
+                        continue;
+                    }
+
+                    System.out.println("Recieved message: " + input);
+                }
+
+                break;
+            } catch (IOException e) {
+            }
+
+        }
+    }
+
     public void messageReceived(String message) {
         System.out.println(message);
         /*for (ConnectionImpl receiver : listen){
@@ -66,6 +89,6 @@ public class Server implements MessageListener {
     public static void main(String[] args) {
         Log.setLogName("Server Log");
         Server server = new Server();
-        server.start();
+        server.startDebug();
     }
 }

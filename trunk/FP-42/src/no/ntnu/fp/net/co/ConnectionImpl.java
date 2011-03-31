@@ -12,6 +12,8 @@ import java.net.UnknownHostException;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 
 import no.ntnu.fp.net.cl.ClException;
@@ -86,7 +88,7 @@ public class ConnectionImpl extends AbstractConnection {
         }
         catch (ClException e) {
             state = State.CLOSED;
-            System.out.println("fail");
+            System.out.println("failed");
             return;
             //TODO: Something useful
         }
@@ -100,6 +102,7 @@ public class ConnectionImpl extends AbstractConnection {
             sendAck(synAck, false);
             
             state = State.ESTABLISHED;
+            System.out.println("Connection successfully established to " + remoteAddress);
         }
         else {
             state = State.CLOSED;
@@ -147,6 +150,8 @@ public class ConnectionImpl extends AbstractConnection {
 
 
             subConnection.state = State.ESTABLISHED;
+
+            System.out.println("Connection successfully established to " + remoteAddress);
 
             usedPorts.put(syn.getDest_port(), Boolean.TRUE);
 
@@ -199,11 +204,9 @@ public class ConnectionImpl extends AbstractConnection {
         KtnDatagram packet;
         try {
             packet = receivePacket(false);
-            if(isValid(packet)){
-                sendAck(packet, false);
-            }
         }
         catch (EOFException e) {
+            System.out.println("*** " + e.getMessage() + " ***");
             state = State.CLOSE_WAIT;
             close();
             return null;
@@ -213,7 +216,15 @@ public class ConnectionImpl extends AbstractConnection {
 
         if (packet == null) throw new SocketTimeoutException();
 
+        if (packet.getFlag() == Flag.FIN){
+            System.out.println("*** FIN received ***");
+            state = State.CLOSE_WAIT;
+            close();
+            return null;
+        }
+
         if (isValid(packet)){
+            System.out.println("pong");
             sendAck(packet, false);
             return (String)packet.getPayload();
         }
@@ -232,14 +243,31 @@ public class ConnectionImpl extends AbstractConnection {
         if (state == State.CLOSE_WAIT){
             KtnDatagram fin = constructInternalPacket(Flag.FIN);
 
+            System.out.print("Sending ACK from CLOSE_WAIT");
+            sendAck(disconnectRequest, false);
+            System.out.println("done.");
+            state = State.LAST_ACK;
             try {
-                simplySendPacket(fin);
-                state = State.LAST_ACK;
-            } catch (ClException e) {
-                //TODO: something useful
+                Thread.sleep(500);
+            } catch (InterruptedException ex) {
+                
             }
 
-            KtnDatagram ack = receiveAck();
+            System.out.print("Sending FIN from LAST_ACK... ");
+            try {
+                simplySendPacket(fin);
+                System.out.println("done");
+            } catch (ClException ex) {
+                System.out.println(ex.getMessage());
+            }
+
+            System.out.print("Receiving last ack... ");
+            KtnDatagram lastAck = receiveAck();
+
+            if (lastAck == null) throw new SocketTimeoutException();
+
+            System.out.println("done.");
+
             state = State.CLOSED;
         }
         else {
@@ -249,7 +277,7 @@ public class ConnectionImpl extends AbstractConnection {
 
                 state = State.FIN_WAIT_1;
             } catch (ClException e) {
-                //TODO: something useful
+                System.out.println(e.getMessage());
             }
 
             KtnDatagram ack = receiveAck();
@@ -268,6 +296,13 @@ public class ConnectionImpl extends AbstractConnection {
             }
 
             state = State.CLOSED;
+        }
+        if (state == State.CLOSED){
+            System.out.println("Connection to " + remoteAddress
+                    + " at port " + remotePort + " closed.");
+        }
+        else {
+            System.out.println(state);
         }
     }
 
@@ -330,5 +365,9 @@ public class ConnectionImpl extends AbstractConnection {
         if (packet.getSrc_port() != remotePort) return false;
 
         return true;*/
+    }
+
+    public State getState(){
+        return state;
     }
 }
