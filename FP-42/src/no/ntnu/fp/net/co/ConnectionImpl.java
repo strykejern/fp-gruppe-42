@@ -81,7 +81,9 @@ public class ConnectionImpl extends AbstractConnection {
 
         KtnDatagram packet = constructInternalPacket(Flag.SYN);
         try {
-            
+            try {
+                Thread.sleep(700);
+            } catch (InterruptedException ex) {}
             simplySendPacket(packet);
             state = State.SYN_SENT;
 
@@ -99,6 +101,9 @@ public class ConnectionImpl extends AbstractConnection {
 
         if (synAck.getFlag() == Flag.SYN_ACK) {
             System.out.println("Kjører her!!" + synAck.getFlag());
+            try {
+                Thread.sleep(700);
+            } catch (InterruptedException ex) {}
             sendAck(synAck, false);
             
             state = State.ESTABLISHED;
@@ -182,8 +187,9 @@ public class ConnectionImpl extends AbstractConnection {
         if (state != state.ESTABLISHED) {
             throw new ConnectException("No connection established");
         }
+
         try {
-            Thread.sleep(600);
+            Thread.sleep(700);
         } catch (InterruptedException ex) {
       
         }
@@ -207,11 +213,8 @@ public class ConnectionImpl extends AbstractConnection {
 
         KtnDatagram packet;
         try {
-
             packet = receivePacket(false);
-
             long time = System.currentTimeMillis();
-
             while (packet == null && System.currentTimeMillis() - time < 1000){
                 System.out.println("Packet was null, retrying");
                 packet = receivePacket(false);
@@ -238,14 +241,11 @@ public class ConnectionImpl extends AbstractConnection {
 
         System.out.println("Checking packet...");
 
-        if (true){
-            System.out.println("pong");
-            sendAck(packet, false);
-            return (String)packet.getPayload();
-        }
-        else{
-            return null;
-        }
+        try {
+                Thread.sleep(700);
+        } catch (InterruptedException ex) {}
+        sendAck(packet, false);
+        return (String)packet.getPayload();
         
     }
 
@@ -258,19 +258,17 @@ public class ConnectionImpl extends AbstractConnection {
         if (state == State.CLOSE_WAIT){
             KtnDatagram fin = constructInternalPacket(Flag.FIN);
 
+            try {
+                Thread.sleep(700);
+            } catch (InterruptedException ex) {}
             System.out.print("Sending ACK from CLOSE_WAIT");
             sendAck(disconnectRequest, false);
             System.out.println("done.");
             state = State.LAST_ACK;
-            try {
-                Thread.sleep(500);
-            } catch (InterruptedException ex) {
-                
-            }
 
             System.out.print("Sending FIN from LAST_ACK... ");
             try {
-                Thread.sleep(1000);
+                Thread.sleep(700);
                 simplySendPacket(fin);
                 System.out.println("done");
             } catch (Exception ex) {
@@ -278,6 +276,9 @@ public class ConnectionImpl extends AbstractConnection {
             }
 
             System.out.print("Receiving last ack... ");
+            try {
+                Thread.sleep(700);
+            } catch (InterruptedException ex) {}
             KtnDatagram lastAck = receiveAck();
             long timer = System.currentTimeMillis();
 
@@ -295,7 +296,7 @@ public class ConnectionImpl extends AbstractConnection {
         else {
             KtnDatagram fin = constructInternalPacket(Flag.FIN);
             try {
-                Thread.sleep(1000);
+                Thread.sleep(700);
                 simplySendPacket(fin);
 
                 state = State.FIN_WAIT_1;
@@ -309,7 +310,9 @@ public class ConnectionImpl extends AbstractConnection {
             KtnDatagram fin2 = receivePacket(true);
 
             if (fin2 == null) throw new SocketTimeoutException();
-
+            try {
+                Thread.sleep(700);
+            } catch (InterruptedException ex) {}
             sendAck(fin2, false);
             state = State.TIME_WAIT;
             try {
