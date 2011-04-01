@@ -132,7 +132,11 @@ public class ConnectionImpl extends AbstractConnection {
 
         if (syn != null && syn.getFlag() == Flag.SYN){
             state = State.SYN_RCVD;
-            
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException ex) {
+
+            }
             sendAck(syn, true);
             KtnDatagram ack = receiveAck();
             
@@ -261,9 +265,10 @@ public class ConnectionImpl extends AbstractConnection {
 
             System.out.print("Sending FIN from LAST_ACK... ");
             try {
+                Thread.sleep(1000);
                 simplySendPacket(fin);
                 System.out.println("done");
-            } catch (ClException ex) {
+            } catch (Exception ex) {
                 System.out.println(ex.getMessage());
             }
 
@@ -285,10 +290,11 @@ public class ConnectionImpl extends AbstractConnection {
         else {
             KtnDatagram fin = constructInternalPacket(Flag.FIN);
             try {
+                Thread.sleep(1000);
                 simplySendPacket(fin);
 
                 state = State.FIN_WAIT_1;
-            } catch (ClException e) {
+            } catch (Exception e) {
                 System.out.println(e.getMessage());
             }
 
