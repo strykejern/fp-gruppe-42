@@ -182,7 +182,12 @@ public class ConnectionImpl extends AbstractConnection {
         if (state != state.ESTABLISHED) {
             throw new ConnectException("No connection established");
         }
-        
+        try {
+            Thread.sleep(600);
+        } catch (InterruptedException ex) {
+      
+        }
+
         KtnDatagram packet = constructDataPacket(msg);
         if (sendDataPacketWithRetransmit(packet) == null)
             throw new IOException("No ack received");
