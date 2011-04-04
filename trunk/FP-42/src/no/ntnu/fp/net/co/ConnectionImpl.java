@@ -231,7 +231,7 @@ public class ConnectionImpl extends AbstractConnection {
             close();
             return null;
         }
-
+        
         System.out.println("Packet received");
 
         if (packet == null) throw new SocketTimeoutException();
@@ -244,14 +244,16 @@ public class ConnectionImpl extends AbstractConnection {
         }
 
         System.out.println("Checking packet...");
-
-        try {
+        if(isValid(packet)) {
+            try {
                 Thread.sleep(700);
-        } catch (InterruptedException ex) {}
-        sendAck(packet, false);
-        return (String)packet.getPayload();
-        
+            } catch (InterruptedException ex) {}
+            sendAck(packet, false);
+            return (String)packet.getPayload();
+        }
+        return null;
     }
+
 
     /**
      * Close the connection.
@@ -313,7 +315,7 @@ public class ConnectionImpl extends AbstractConnection {
             } catch (Exception e) {
                 System.out.println(e.getMessage());
             }
-
+        
             KtnDatagram ack = receiveAck();
             state = State.FIN_WAIT_2;
 
@@ -351,8 +353,24 @@ public class ConnectionImpl extends AbstractConnection {
      * @return true if packet is free of errors, false otherwise.
      */
     protected boolean isValid(KtnDatagram packet) {
-        if (packet == null || packet.calculateChecksum() != packet.getChecksum()) {
+       
+
+        if(packet == null){
             return false;
+        }
+        else {
+            if (packet.calculateChecksum() != packet.getChecksum()){
+                System.out.println("Nr 1 "+" VI ER HER .!!:!:!:!:!:##%&(/&)&/n()()&)&()&()&)(&()()");
+                return false;
+            }
+            if(!packet.getDest_addr().equals(myAddress)){
+                System.out.println("Nr 2 "+" VI ER HER .!!:!:!:!:!:##%&(/&)&/n()()&)&()&()&)(&()()");
+                return false;
+            }
+            if(packet.getDest_port() != myPort){
+                System.out.println("Nr 3 "+" VI ER HER .!!:!:!:!:!:##%&(/&)&/n()()&)&()&()&)(&()()");
+                return false;
+            }
         }
 
         switch(state) {
@@ -377,30 +395,21 @@ public class ConnectionImpl extends AbstractConnection {
                 }
                 else if(this.state == State.SYN_RCVD && packet.getFlag() == Flag.SYN ) {
                     return true;
+                }else if(packet.getSeq_nr() != nextSequenceNo) {
+                    return true;
                 }
                 else {
+                    System.out.println("Nr 4 "+" VI ER HER .!!:!:!:!:!:##%&(/&)&/n()()&)&()&()&)(&()()");
                     return false;
                 }
             case LAST_ACK:
+                System.out.println("Nr 5 "+" VI ER HER .!!:!:!:!:!:##%&(/&)&/n()()&)&()&()&)(&()()");
                 return this.state == State.CLOSE_WAIT;
             case TIME_WAIT:
                 return this.state == State.FIN_WAIT_2 && packet.getFlag() == Flag.FIN;
         }
+        System.out.println("Nr 6 "+" VI ER HER .!!:!:!:!:!:##%&(/&)&/n()()&)&()&()&)(&()()");
         return false;
-        /*
-        if (packet.getChecksum() != packet.calculateChecksum()) return false;
-
-        if (packet.getSeq_nr() != nextSequenceNo) return false;
-
-        if (!packet.getDest_addr().equals(getIPv4Address())) return false;
-
-        if (!packet.getSrc_addr().equals(remoteAddress)) return false;
-
-        if (packet.getDest_port() != myPort) return false;
-
-        if (packet.getSrc_port() != remotePort) return false;
-
-        return true;*/
     }
 
     public State getState(){
