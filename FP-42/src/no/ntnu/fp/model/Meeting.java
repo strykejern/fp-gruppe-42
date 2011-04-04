@@ -56,21 +56,68 @@ public class Meeting extends Appointment{
         this.accepted = DB.getParticipants(this, status.PARTICIPATING);
         this.denied = DB.getParticipants(this, status.NOT_PARTICIPATING);
     }
+    /*
+     * Denne skal sende beskjed ved å lagre, den beskjeden den tar inn,
+     * i databasetabellen message.
+     *
+     * @param message Beskjeden som skal sendes
+     *
+     * @return void
+     */
+    public void sendMessage(Message message) {
+        for(Person person : participants) {
+            try{
+                DB.addMessage(message, person, user);
+            }
+            catch (SQLException e) {
 
-    public void sendMessage() {
+            }
+        }
 
     }
 
-    public void sendInvitation() {
+
+    /*
+     * Denne skal sende end invitasjon ved å lagre, den invitasjonen den tar inn,
+     * i databasetabellen message. Den lagrer alle parametrene som invitasjon bruker
+     * som string verdier i tekst.
+     *
+     * @param invitation Invitasjonen som skal sendes
+     *
+     * @return void
+     */
+    public void sendInvitation(Invitation invitation) {
+        for(Person person : participants) {
+            try{
+                DB.addInvitation(invitation, person, this.user);
+            }
+            catch(SQLException e) {
+
+            }
+        }
 
     }
 
-    public void addParticipant() {
+    /*
+     * Legge til deltaker i tabellen
+     *
+     * @param person Personen som skal legges til
+     *
+     * @return void
+     */
 
+    public void addParticipant(Person person) {
+        this.participants.add(person);
     }
-
-    public void removeParticipant() {
-
+    /*
+     * Fjerne deltaker fra tabellen
+     *
+     * @param person Personen som skal fjernes
+     *
+     * @return void
+     */
+    public void removeParticipant(Person person) {
+        this.participants.remove(person);
     }
 
 }
