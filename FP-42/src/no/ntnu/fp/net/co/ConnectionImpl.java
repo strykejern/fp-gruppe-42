@@ -190,13 +190,17 @@ public class ConnectionImpl extends AbstractConnection {
 
         try {
             Thread.sleep(700);
+            
         } catch (InterruptedException ex) {
       
         }
-
         KtnDatagram packet = constructDataPacket(msg);
-        if (sendDataPacketWithRetransmit(packet) == null)
+        if (sendDataPacketWithRetransmit(packet) == null){
+            System.out.println("Jeg er et dumt stystem!");
             throw new IOException("No ack received");
+            }
+
+       
     }
 
     /**
@@ -262,7 +266,13 @@ public class ConnectionImpl extends AbstractConnection {
                 Thread.sleep(700);
             } catch (InterruptedException ex) {}
             System.out.print("Sending ACK from CLOSE_WAIT");
-            sendAck(disconnectRequest, false);
+            try {
+                Thread.sleep(500);
+                sendAck(disconnectRequest, false);
+            } catch (InterruptedException ex) {
+                
+            }
+            
             System.out.println("done.");
             state = State.LAST_ACK;
 
@@ -316,7 +326,7 @@ public class ConnectionImpl extends AbstractConnection {
             sendAck(fin2, false);
             state = State.TIME_WAIT;
             try {
-                Thread.sleep(30000);
+                Thread.sleep(10000);
             } catch (InterruptedException ex) {
 
             }
