@@ -46,6 +46,20 @@ public class DB {
                 databaseLocation, userName, password);
     }
 
+    public static boolean logIn(String username, String password)
+            throws SQLException {
+        final String query = "SELECT Passord FROM BRUKER WHERE Brukernavn = '"+username+"'";
+        Statement stat = dbConnection.createStatement();
+        stat.executeQuery(query);
+
+        ResultSet result = stat.getResultSet();
+
+        if (!result.next()) throw new SQLException("Wrong username/password");
+        
+        if (result.getString("Passord").equals(password)) return true;
+        else return false;
+    }
+
 
     public static ArrayList<Person> getPersons() throws SQLException{
         final String query = "SELECT * FROM BRUKER ORDER BY Brukernavn ASC";
@@ -163,7 +177,7 @@ public class DB {
         while (result.next()){
             int id                  = result.getInt("S_ID");
             Person creator          = getPerson(result.getString("Oppretter"));
-            Timespan time           = new Timespan(result.getTimestamp("Starttid"), result.getTimestamp("Sluttid"));
+            Timespan time           = new Timespan(result.getTimestamp("Starttid"), result.getTimestamp("Slutttid"));
             String description      = result.getString("Beskrivelse");
             String place            = result.getString("Sted");
             MeetingRoom meetingroom = getMeetingRoom(result.getInt("M_ID"));
@@ -303,7 +317,7 @@ public class DB {
 
     public static void changeStatus(Person person, Meeting meeting, status st)
         throws SQLException{
-        String query = "INSERT INTO DELTAKER WHERE Brukernavn='" + person.getUsername()
+        String query = "UPDATE DELTAKER WHERE Brukernavn='" + person.getUsername()
                 + "' AND M_ID=" + meeting.getId()
                 + "(Status) VALUES ('"
                 + st
