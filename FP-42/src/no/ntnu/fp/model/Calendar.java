@@ -6,13 +6,19 @@
 package no.ntnu.fp.model;
 
 import Database.DB;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import no.ntnu.fp.model.Timespan;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Date;
+import no.ntnu.fp.model.*;
 
 /**
  *
  * @author Anders
  */
+
 public class Calendar {
 
     private Person bruker;
@@ -56,4 +62,49 @@ public class Calendar {
         }
         new Meeting(id, creator, time, description, meetingRoom);
     }
+
+
+
+    public void editAppointment(Appointment appointment, Date start, Date end, String description) {
+        Timespan time = new Timespan(start, end);
+        appointment.setTime(time);
+        appointment.setDescription(description);
+        try {
+            DB.editAppointment(appointment);
+        } catch (SQLException ex) {
+
+        }
+ }
+
+    
+
+    public void deleteAppointment(Appointment appointment) {
+        try {
+            DB.removeAppointment(appointment);
+        } catch (SQLException ex) {
+
+        }
+    }
+
+    public void getCalender(Person person) {
+        try{
+        DB.getAppointments(person);
+        DB.getMeetings(person);
+        }
+        catch(SQLException e) {
+
+        }
+    }
+
+    public void recieveMessage() {
+
+    }
+
+    public void changeMeetingTime () {
+      
+    }
+
+
+
+
 }
