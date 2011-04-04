@@ -5,7 +5,7 @@
 
 package no.ntnu.fp.model;
 
-import java.util.Date;
+import java.sql.Date;
 
 /**
  *
