@@ -11,10 +11,9 @@ import java.util.ArrayList;
 import no.ntnu.fp.model.Appointment;
 import no.ntnu.fp.model.Meeting;
 import no.ntnu.fp.model.MeetingRoom;
-import no.ntnu.fp.model.MeetingRoom;
 import no.ntnu.fp.model.Message;
 import no.ntnu.fp.model.Person;
-import no.ntnu.fp.model.Person;
+import no.ntnu.fp.model.Invitation;
 import no.ntnu.fp.model.Timespan;
 
 /**
@@ -355,6 +354,26 @@ public class DB {
 
         Statement stat = dbConnection.createStatement();
         stat.executeUpdate(query);
+    }
+
+     public static void addInvitation(Invitation invitation, Person til, Person fra)
+                throws SQLException {
+                String tekst = "";
+                tekst += "Møte holdes " +invitation.getMeet().getTime().toString();
+                tekst += " i rom " + invitation.getMeet().getMeetingRoom().getName();
+                tekst += " og gjelder " + invitation.getMeet().getDescription();
+
+        String query = "INSERT INTO Melding "
+                + "(Til, Fra, Emne, Tekst) VALUES ("+
+                til.getUsername()+", "+
+                fra.getUsername()+", "+
+                invitation.getMeet().getDescription()+", "+
+                tekst+",)";
+
+        Statement stat = dbConnection.createStatement();
+        stat.executeUpdate(query);
+
+
     }
 
 }
