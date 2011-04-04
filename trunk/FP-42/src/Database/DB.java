@@ -5,13 +5,17 @@ package Database;
  * and open the template in the editor.
  */
 
+import java.lang.String;
 import java.sql.*;
 import java.util.ArrayList;
 import no.ntnu.fp.model.Appointment;
 import no.ntnu.fp.model.Meeting;
 import no.ntnu.fp.model.MeetingRoom;
+import no.ntnu.fp.model.MeetingRoom;
 import no.ntnu.fp.model.Message;
 import no.ntnu.fp.model.Person;
+import no.ntnu.fp.model.Person;
+import no.ntnu.fp.model.Timespan;
 
 /**
  *
@@ -136,8 +140,8 @@ public class DB {
 
     public static ArrayList<Appointment> getAppointments(Person person)
                 throws SQLException {
-        String query = "SELECT * FROM avtale, deltaker WHERE avtale.Oppretter=" + person.getUsername() +
-                "OR (avtale.S_ID=deltaker.S_ID AND deltaker.brukernavn=" + person.getUsername() + ");";
+        String query = "SELECT * FROM avtale, deltaker WHERE Mote=false AND (avtale.Oppretter=" + person.getUsername() +
+                "OR (avtale.S_ID=deltaker.S_ID AND deltaker.brukernavn=" + person.getUsername() + "));";
         Statement stat = dbConnection.createStatement();
 
         stat.executeUpdate(query);
@@ -145,11 +149,19 @@ public class DB {
         ResultSet result = stat.getResultSet();
         ArrayList<Appointment> a = new ArrayList<Appointment>();
         while (result.next()){
-
-
-//            a.add(new Appointment());
+            int id = result.getInt("S_ID");
+            Person creator = getPerson(result.getString("Oppretter"));
+            Timespan time = new Timespan(result.getDate("Starttid"), result.getDate("Sluttid"));
+            String description = result.getString("Beskrivelse");
+            String place = result.getString("Sted");
+            MeetingRoom meetingroom = getMeetingRoom(result.getInt("M_ID"));
+            if (place != null) {
+                a.add(new Appointment(id, creator, time, description, place));
+            }
+            else {
+                a.add(new Appointment(id, creator, time, description, meetingroom));
+            }
         }
-
         return a;
     }
 
@@ -162,14 +174,23 @@ public class DB {
         stat.executeUpdate(query);
 
         ResultSet result = stat.getResultSet();
-        ArrayList<Meeting> a = new ArrayList<Meeting>();
+        ArrayList<Meeting> m = new ArrayList<Meeting>();
         while (result.next()){
-            
-
-            //a.add(new Meeting());
+            int id = result.getInt("S_ID");
+            Person creator = getPerson(result.getString("Oppretter"));
+            Timespan time = new Timespan(result.getDate("Starttid"), result.getDate("Sluttid"));
+            String description = result.getString("Beskrivelse");
+            String place = result.getString("Sted");
+            MeetingRoom meetingroom = getMeetingRoom(result.getInt("M_ID"));
+            if (place != null) {
+                m.add(new Meeting(id, creator, time, description, place));
+            }
+            else {
+                m.add(new Meeting(id, creator, time, description, meetingroom));
+            }
         }
 
-        return a;
+        return m;
     }
 
     public static void removeAppointment(Appointment appointment)
@@ -196,7 +217,7 @@ public class DB {
         stat.executeUpdate(query);
     }
 
-    public static ArrayList<MeetingRoom> getMeetingRoom (int number)
+    public static ArrayList<MeetingRoom> getMeetingRooms (int number)
              throws SQLException {
        String query = "SELECT * FROM Moterom WHERE size>=" +number+ "ORDER BY size";
        Statement stat = dbConnection.createStatement();
@@ -212,6 +233,18 @@ public class DB {
        }
 
        return r;
+
+    }
+
+
+        public static MeetingRoom getMeetingRoom (int id)
+             throws SQLException {
+       String query = "SELECT * FROM Moterom WHERE M_ID>=" +id+ ";";
+       Statement stat = dbConnection.createStatement();
+       stat.executeUpdate(query);
+
+       ResultSet result = stat.getResultSet();
+       return new MeetingRoom(result.getString("Navn"), result.getInt("Storrelse"));
 
     }
 
