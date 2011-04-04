@@ -205,8 +205,9 @@ public class FileStorage implements Storage {
 		StringTokenizer tokenizer = new StringTokenizer(line, ";");
 		String name = tokenizer.nextToken();
 		String email = tokenizer.nextToken();
+                String username = tokenizer.nextToken();
 		
 		Date date = parseDate(tokenizer.nextToken());
-		return new Person(name, email, date);
+		return new Person(name, email, username);
 	}	
 }
