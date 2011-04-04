@@ -13,6 +13,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
 import no.ntnu.fp.model.*;
+import java.sql.Timestamp;
 
 /**
  *
@@ -44,9 +45,17 @@ public class Calendar {
     }
 
     public void newMeeting() throws SQLException{
+        /*
+         * Bare en test så det ikke er error i filen
+         */
+
+        Timestamp start = Timestamp.valueOf("2011-05-04 12:15:00");
+        Timestamp slutt = Timestamp.valueOf("2011-05-04 16:00:00");
+
+
         int id = meetings.size()+1;
         Person creator = bruker;
-        Timespan time = new Timespan(/*input fra GUI, dato på avtale/møte*/);
+        Timespan time = new Timespan(start,slutt);
         String description = /*String fra GUI, beskrivelse av møte/avtale*/"";
         String place = "";
         ArrayList meetingRooms = DB.getMeetingRoom(/*input fra GUI, størrelse på ønsket rom*/);
