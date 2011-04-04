@@ -19,6 +19,7 @@ public class Appointment {
     private String description;
     private String place;
     private MeetingRoom meetingRoom;
+    private boolean atMeetingRoom;
 
     public Appointment(int id, Person creator, Timespan time, String description, String place) {
         this.id = id;
@@ -26,6 +27,7 @@ public class Appointment {
         this.time = time;
         this.description = description;
         this.place = place;
+        atMeetingRoom = false;
     }
 
     public Appointment(int id, Person creator, Timespan time,String description, MeetingRoom meetingRoom) {
@@ -34,6 +36,7 @@ public class Appointment {
         this.time = time;
         this.description = description;
         this.meetingRoom = meetingRoom;
+        atMeetingRoom = true;
     }
 
     public Appointment(Person creator, Timespan time, String description, MeetingRoom meetingRoom) {
@@ -41,6 +44,7 @@ public class Appointment {
         this.time = time;
         this.description = description;
         this.meetingRoom = meetingRoom;
+        atMeetingRoom = true;
     }
 
     public Appointment(Person creator, Timespan time, String description, String place) {
@@ -48,6 +52,7 @@ public class Appointment {
         this.time = time;
         this.description = description;
         this.place = place;
+        atMeetingRoom = false;
     }
 
 
@@ -97,5 +102,9 @@ public class Appointment {
 
     public void setPlace(String place) {
         this.place = place;
+    }
+
+    public boolean isAtMeetingRoom(){
+        return atMeetingRoom;
     }
 }
