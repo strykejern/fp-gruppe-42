@@ -76,7 +76,7 @@ public class DB {
         stat.executeQuery(query);
         ResultSet result = stat.getResultSet();
 
-        if(result!=null){
+        if(result.next()){
             String navn = result.getString("Navn");
             String mail = result.getString("Mailadresse");
             Person p = new Person(brukernavn, navn, mail);
@@ -148,14 +148,17 @@ public class DB {
         stat.executeUpdate(query);
 
         ResultSet result = stat.getResultSet();
+
         ArrayList<Appointment> a = new ArrayList<Appointment>();
+
         while (result.next()){
             int id = result.getInt("S_ID");
             Person creator = getPerson(result.getString("Oppretter"));
-            Timespan time = new Timespan(result.getDate("Starttid"), result.getDate("Sluttid"));
+            Timespan time = new Timespan(result.getTimestamp("Starttid"), result.getTimestamp("Sluttid"));
             String description = result.getString("Beskrivelse");
             String place = result.getString("Sted");
             MeetingRoom meetingroom = getMeetingRoom(result.getInt("M_ID"));
+
             if (place != null) {
                 a.add(new Appointment(id, creator, time, description, place));
             }
@@ -179,7 +182,7 @@ public class DB {
         while (result.next()){
             int id = result.getInt("S_ID");
             Person creator = getPerson(result.getString("Oppretter"));
-            Timespan time = new Timespan(result.getDate("Starttid"), result.getDate("Sluttid"));
+            Timespan time = new Timespan(result.getTimestamp("Starttid"), result.getTimestamp("Sluttid"));
             String description = result.getString("Beskrivelse");
             String place = result.getString("Sted");
             MeetingRoom meetingroom = getMeetingRoom(result.getInt("M_ID"));
@@ -238,11 +241,12 @@ public class DB {
 
         public static MeetingRoom getMeetingRoom (int id)
              throws SQLException {
-       String query = "SELECT * FROM MOTEROM WHERE M_ID>=" +id+ ";";
+       String query = "SELECT * FROM MOTEROM WHERE M_ID=" +id+ ";";
        Statement stat = dbConnection.createStatement();
        stat.executeQuery(query);
 
        ResultSet result = stat.getResultSet();
+       if (!result.next()) throw new SQLException("No MeetingRoom");
        return new MeetingRoom(result.getString("Navn"), result.getInt("Storrelse"));
 
     }
@@ -363,12 +367,12 @@ public class DB {
                 tekst += " i rom " + invitation.getMeet().getMeetingRoom().getName();
                 tekst += " og gjelder " + invitation.getMeet().getDescription();
 
-        String query = "INSERT INTO Melding "
-                + "(Til, Fra, Emne, Tekst) VALUES ("+
-                til.getUsername()+", "+
-                fra.getUsername()+", "+
-                invitation.getMeet().getDescription()+", "+
-                tekst+",)";
+        String query = "INSERT INTO MELDING "
+                + "(Til, Fra, Emne, Tekst) VALUES ('"+
+                til.getUsername()+"', '"+
+                fra.getUsername()+"','"+
+                invitation.getMeet().getDescription()+"','"+
+                tekst+"')";
 
         Statement stat = dbConnection.createStatement();
         stat.executeUpdate(query);
