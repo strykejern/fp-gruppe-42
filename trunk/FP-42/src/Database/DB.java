@@ -192,6 +192,30 @@ public class DB {
         return a;
     }
 
+    public static void editAppointment(Appointment appointment)
+        throws SQLException{
+
+        String query ="UPDATE avtale" + "(Starttidspunkt, Sluttidspunkt, Beskrivelse, Sted) SET (" +
+                appointment.getTime().getStart() +", " +
+                appointment.getTime().getEnd() + ", " +
+                appointment.getDescription() + ", " +
+                appointment.getPlace() + ",)";
+
+        Statement stat = dbConnection.createStatement();
+
+        stat.executeUpdate(query);
+
+    }
+
+
+    public static void removeAppointment(Appointment appointment)
+            throws SQLException {
+        String query = "DELETE * FROM avtale WHERE S_ID=" + appointment.getId() + ";";
+        Statement stat = dbConnection.createStatement();
+
+        stat.executeUpdate(query);
+    }
+
         public static ArrayList<Meeting> getMeetings(Person person)
                 throws SQLException {
         String query = "SELECT * FROM avtale, deltaker WHERE Mote=TRUE AND (Oppretter=" + person.getUsername() +
@@ -219,15 +243,6 @@ public class DB {
 
         return m;
     }
-
-    public static void removeAppointment(Appointment appointment)
-            throws SQLException {
-        String query = "DELETE * FROM avtale WHERE S_ID=" + appointment.getId() + ";";
-        Statement stat = dbConnection.createStatement();
-
-        stat.executeUpdate(query);
-    }
-    
 
     public static void addMeetingRoom(MeetingRoom room)
             throws SQLException {
