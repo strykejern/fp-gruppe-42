@@ -129,9 +129,18 @@ public class DB {
                 appointment.getCreator().getUsername() + "', '" +
                 appointment.getTime().getStart() + "', '" +
                 appointment.getTime().getEnd() + "', '" +
-                appointment.getDescription() + "', '" +
-                appointment.getPlace() + "', " +
-                appointment.getMeetingRoom().getId() + ")";
+                appointment.getDescription() + "', ";
+
+
+        if (appointment.isAtMeetingRoom()){
+            query += "'', " + appointment.getMeetingRoom().getId();
+        }
+         else {
+            query += "'" + appointment.getPlace() + "', NULL";
+         }
+
+        query += ");";
+
         System.out.println(query);
 
         Statement stat = dbConnection.createStatement();
@@ -152,11 +161,11 @@ public class DB {
         ArrayList<Appointment> a = new ArrayList<Appointment>();
 
         while (result.next()){
-            int id = result.getInt("S_ID");
-            Person creator = getPerson(result.getString("Oppretter"));
-            Timespan time = new Timespan(result.getTimestamp("Starttid"), result.getTimestamp("Sluttid"));
-            String description = result.getString("Beskrivelse");
-            String place = result.getString("Sted");
+            int id                  = result.getInt("S_ID");
+            Person creator          = getPerson(result.getString("Oppretter"));
+            Timespan time           = new Timespan(result.getTimestamp("Starttid"), result.getTimestamp("Sluttid"));
+            String description      = result.getString("Beskrivelse");
+            String place            = result.getString("Sted");
             MeetingRoom meetingroom = getMeetingRoom(result.getInt("M_ID"));
 
             if (place != null) {
