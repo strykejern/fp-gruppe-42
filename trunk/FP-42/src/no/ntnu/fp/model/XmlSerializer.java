@@ -74,7 +74,7 @@ public class XmlSerializer {
 	}
 	
 	private Person assemblePerson(Element personElement) throws ParseException {
-		String name = null, email = null;
+		String name = null, email = null, username = null;
 		Date date = null;
 		Element element = personElement.getFirstChildElement("name");
 		if (element != null) {
