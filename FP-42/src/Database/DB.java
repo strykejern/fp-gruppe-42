@@ -48,7 +48,7 @@ public class DB {
 
 
     public static ArrayList<Person> getPersons() throws SQLException{
-        final String query = "SELECT * FROM bruker ORDER BY brukernavn ASC";
+        final String query = "SELECT * FROM BRUKER ORDER BY Brukernavn ASC";
 
         Statement stat = dbConnection.createStatement();
         stat.executeQuery(query);
@@ -56,9 +56,9 @@ public class DB {
 
         ArrayList<Person> p = new ArrayList<Person>();
         while (result.next()){
-            String username  = result.getString("username");
-            String name  = result.getString("name");
-            String email  = result.getString("email");
+            String username  = result.getString("Brukernavn");
+            String name  = result.getString("Navn");
+            String email  = result.getString("Mailadresse");
 
             p.add(new Person(username, name, email));
         }
@@ -70,15 +70,15 @@ public class DB {
     }
 
     public static Person getPerson(String brukernavn) throws SQLException{
-        final String query = "SELECT * FROM bruker WHERE brukernavn = "+brukernavn+"";
+        final String query = "SELECT * FROM BRUKER WHERE Brukernavn = '"+brukernavn+"'";
 
         Statement stat = dbConnection.createStatement();
         stat.executeQuery(query);
         ResultSet result = stat.getResultSet();
 
         if(result!=null){
-            String navn = result.getString("name");
-            String mail = result.getString("email");
+            String navn = result.getString("Navn");
+            String mail = result.getString("Mailadresse");
             Person p = new Person(brukernavn, navn, mail);
 
             result.close();
@@ -111,7 +111,7 @@ public class DB {
             throws SQLException {
 
 
-        String query = "DELETE * FROM bruker WHERE brukernavn="+bruker.getUsername();
+        String query = "DELETE FROM BRUKER WHERE Brukernavn='"+bruker.getUsername() +"'";
 
         Statement stat = dbConnection.createStatement();
 
@@ -123,14 +123,16 @@ public class DB {
             throws SQLException {
 
 
-        String query = "INSERT INTO avtale "
-                + "(Mote, Oppretter, Starttidspunkt, Sluttidspunt, Beskrivelse, Sted, M_ID) VALUES ("+
-                mote + "," +
-                appointment.getCreator() + ", " +
-                appointment.getTime() + ", " +
-                appointment.getDescription() + ", " +
-                appointment.getPlace() + ", " +
-                appointment.getId() + ",)";
+        String query = "INSERT INTO SUPERAVTALE "
+                + "(Mote, Oppretter, Starttidspunkt, Slutttidspunkt, Beskrivelse, Sted, M_ID) VALUES ("+
+                mote + ",'" +
+                appointment.getCreator().getUsername() + "', '" +
+                appointment.getTime().getStart() + "', '" +
+                appointment.getTime().getEnd() + "', '" +
+                appointment.getDescription() + "', '" +
+                appointment.getPlace() + "', " +
+                appointment.getMeetingRoom().getId() + ")";
+        System.out.println(query);
 
         Statement stat = dbConnection.createStatement();
 
@@ -204,12 +206,10 @@ public class DB {
     public static void addMeetingRoom(MeetingRoom room)
             throws SQLException {
 
-
-        String query = "INSERT INTO Moterom "
-                + "(M_ID, Navn, Storrelse) VALUES (" +
-                room.getId() + ", " +
-                room.getName() + ", " +
-                room.getSize()  + ",)";
+        String query = "INSERT INTO MOTEROM "
+                + "(Navn, Storrelse) VALUES ('" +
+                room.getName() + "', " +
+                room.getSize()  + ")";
 
         Statement stat = dbConnection.createStatement();
 
@@ -218,15 +218,15 @@ public class DB {
 
     public static ArrayList<MeetingRoom> getMeetingRooms (int number)
              throws SQLException {
-       String query = "SELECT * FROM Moterom WHERE size>=" +number+ "ORDER BY size";
+       String query = "SELECT * FROM MOTEROM WHERE Storrelse>=" + number + " ORDER BY Storrelse ASC";
        Statement stat = dbConnection.createStatement();
-       stat.executeUpdate(query);
+       stat.executeQuery(query);
 
        ResultSet result = stat.getResultSet();
        ArrayList<MeetingRoom> r = new ArrayList<MeetingRoom>();
        while (result.next()){
-            String name  = result.getString("name");
-            int size  = result.getInt("size");
+            String name  = result.getString("Navn");
+            int size  = result.getInt("Storrelse");
 
             r.add(new MeetingRoom(name,size));
        }
@@ -238,18 +238,18 @@ public class DB {
 
         public static MeetingRoom getMeetingRoom (int id)
              throws SQLException {
-       String query = "SELECT * FROM Moterom WHERE M_ID>=" +id+ ";";
+       String query = "SELECT * FROM MOTEROM WHERE M_ID>=" +id+ ";";
        Statement stat = dbConnection.createStatement();
-       stat.executeUpdate(query);
+       stat.executeQuery(query);
 
        ResultSet result = stat.getResultSet();
        return new MeetingRoom(result.getString("Navn"), result.getInt("Storrelse"));
 
     }
 
-    public static void removeMeetingRoom (MeetingRoom meetingroom)
+    public static void removeMeetingRoom (int id)
               throws SQLException {
-       String query = "DELETE * FROM Moterom WHERE M_ID=" + meetingroom.getId() + ";";
+       String query = "DELETE FROM MOTEROM WHERE M_ID=" + id + ";";
        Statement stat = dbConnection.createStatement();
        stat.executeUpdate(query);
 
@@ -258,11 +258,11 @@ public class DB {
     
     public static void addParticipants (Person person, Appointment appointment)
                throws SQLException {
-         String query = "INSERT INTO Deltaker "
-                + "(Brukernavn, S_ID, Status) VALUES (" +
-                person.getUsername() + ", " +
-                appointment.getId() + ", " +
-                status.NOT_ANSWERED + ",)";
+         String query = "INSERT INTO DELTAKER "
+                + "(Brukernavn, S_ID, Status) VALUES ('" +
+                person.getUsername() + "', " +
+                appointment.getId() + ", '" +
+                status.NOT_ANSWERED + "')";
 
         Statement stat = dbConnection.createStatement();
 
@@ -271,17 +271,17 @@ public class DB {
     
     public static ArrayList<Person> getParticipants(Meeting meeting, status st)
             throws SQLException {
-       String query = "SELECT * FROM Deltaker WHERE S_ID=" +
-               meeting.getId() + "AND status=" + st + ";";
+       String query = "SELECT * FROM DELTAKER WHERE S_ID=" +
+               meeting.getId() + "AND status='" + st + "';";
 
        Statement stat = dbConnection.createStatement();
-       stat.executeUpdate(query);
+       stat.executeQuery(query);
 
        ResultSet result = stat.getResultSet();
 
        ArrayList<Person> p = new ArrayList<Person>();
        while (result.next()){
-            String username  = result.getString("username");
+            String username  = result.getString("Brukernavn");
 
             p.add(getPerson(username)); 
        }
@@ -290,11 +290,11 @@ public class DB {
 
     public static void changeStatus(Person person, Meeting meeting, status st)
         throws SQLException{
-        String query = "INSERT INTO Deltaker WHERE Brukernavn=" + person.getUsername()
-                + "AND M_ID=" + meeting.getId()
-                + "(Status) VALUES ("
+        String query = "INSERT INTO DELTAKER WHERE Brukernavn='" + person.getUsername()
+                + "' AND M_ID=" + meeting.getId()
+                + "(Status) VALUES ('"
                 + st
-                +",)";
+                +"')";
 
         Statement stat = dbConnection.createStatement();
         stat.executeUpdate(query);
@@ -304,7 +304,7 @@ public class DB {
         
     public static void removeParticipant(Person person)
                throws SQLException {
-        String query = "DELETE * FROM Deltaker WHERE brukernavn="+person.getUsername();
+        String query = "DELETE FROM DELTAKER WHERE Brukernavn='"+person.getUsername() + "'";
 
         Statement stat = dbConnection.createStatement();
         stat.executeUpdate(query);
@@ -313,12 +313,12 @@ public class DB {
 
     public static void addMessage(Message message, Person til, Person fra)
                 throws SQLException {
-        String query = "INSERT INTO Melding "
-                + "(Til, Fra, Emne, Tekst) VALUES ("+
-                til.getUsername()+", "+
-                fra.getUsername()+", "+
-                message.getSubject()+", "+
-                message.getContent()+",)";
+        String query = "INSERT INTO MELDING"
+                + "(Til, Fra, Emne, Tekst) VALUES ('"+
+                til.getUsername()+"', '"+
+                fra.getUsername()+"', '"+
+                message.getSubject()+"', '"+
+                message.getContent()+"')";
 
         Statement stat = dbConnection.createStatement();
         stat.executeUpdate(query);
@@ -329,10 +329,10 @@ public class DB {
     public static Message getMessage(int id)
                 throws SQLException{
 
-        String query = "SELECT * FROM Melding WHERE M_ID= "+id;
+        String query = "SELECT * FROM MELDING WHERE M_ID= "+id;
 
         Statement stat = dbConnection.createStatement();
-        stat.executeUpdate(query);
+        stat.executeQuery(query);
 
         ResultSet result = stat.getResultSet();
 
@@ -350,7 +350,7 @@ public class DB {
 
     public static void removemessage(int id)
                 throws SQLException{
-        String query = "DELETE * FROM Melding WHERE M_ID= "+id;
+        String query = "DELETE FROM MELDING WHERE M_ID= "+id;
 
         Statement stat = dbConnection.createStatement();
         stat.executeUpdate(query);
