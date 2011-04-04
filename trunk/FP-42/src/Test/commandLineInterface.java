@@ -30,7 +30,7 @@ public class commandLineInterface {
             System.out.print("Password: ");
             password = input.next();
         }
-        while (DB.login(username, password));
+        while (DB.logIn(username, password));
 
     }
 }
