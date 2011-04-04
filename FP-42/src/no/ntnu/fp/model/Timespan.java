@@ -5,7 +5,7 @@
 
 package no.ntnu.fp.model;
 
-import java.sql.Date;
+import java.sql.Timestamp;
 
 /**
  *
@@ -13,30 +13,31 @@ import java.sql.Date;
  */
 public class Timespan {
 
-    private Date start;
-    private Date end;
+    private Timestamp start;
+    private Timestamp end;
 
-    public Timespan(Date start, Date end) {
+    public Timespan(Timestamp start, Timestamp end) {
         this.start = start;
         this.end = end;
     }
 
-    public Date getEnd() {
+    public Timestamp getEnd() {
         return end;
     }
 
-    public void setEnd(Date end) {
+    public void setEnd(Timestamp end) {
         this.end = end;
     }
 
-    public Date getStart() {
+    public Timestamp getStart() {
         return start;
     }
 
-    public void setStart(Date start) {
+    public void setStart(Timestamp start) {
         this.start = start;
     }
 
+    @Override
     public String toString() {
         String tid = "Starter klokken " + start.toString() + " og slutter klokken " + end.toString();
         return tid;
