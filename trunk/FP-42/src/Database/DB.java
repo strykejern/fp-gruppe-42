@@ -92,19 +92,19 @@ public class DB {
             throws SQLException {
 
 
-        String query = "INSERT INTO Bruker "
-                + "(Brukernavn, Passord, Navn, Mailadresse) VALUES (" +
-                bruker.getUsername() + ", " +
-                bruker.getPassword() + ", " +
-                bruker.getName() + ", " +
-                bruker.getEmail() + ",)";
+        String query = "INSERT INTO BRUKER "
+                + "(Brukernavn, Passord, Navn, Mailadresse) VALUES ('" +
+                bruker.getUsername() + "', '" +
+                bruker.getPassword() + "', '" +
+                bruker.getName() + "', '" +
+                bruker.getEmail() + "')";
 
         Statement stat = dbConnection.createStatement();
 
         stat.executeUpdate(query);
     }
 
-    public static void removePerson(no.ntnu.fp.model.Person bruker)
+    public static void removePerson(Person bruker)
             throws SQLException {
 
 
@@ -147,7 +147,7 @@ public class DB {
         while (result.next()){
 
 
-            a.add(new Appointment());
+//            a.add(new Appointment());
         }
 
         return a;
@@ -166,7 +166,7 @@ public class DB {
         while (result.next()){
             
 
-            a.add(new Meeting());
+            //a.add(new Meeting());
         }
 
         return a;
