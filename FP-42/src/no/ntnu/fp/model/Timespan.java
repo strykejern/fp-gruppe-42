@@ -37,5 +37,10 @@ public class Timespan {
         this.start = start;
     }
 
+    public String toString() {
+        String tid = "Starter klokken " + start.toString() + " og slutter klokken " + end.toString();
+        return tid;
+    }
+
     
 }
