@@ -18,7 +18,7 @@ import no.ntnu.fp.model.Timespan;
 
 /**
  *
- * @author Snorre
+ * @author Snorre, Jan-Tore
  */
 public class DB {
 
@@ -106,9 +106,6 @@ public class DB {
 
             return p;
         } else throw new SQLException();
-
-        
-        
     }
 
     public static void addPerson(Person user)
@@ -139,7 +136,7 @@ public class DB {
 
     }
 
-    public static void addAppointment(Appointment appointment, boolean meeting)
+    public static void addAppointment(Appointment appointment, int meeting)
             throws SQLException {
 
 
@@ -149,14 +146,14 @@ public class DB {
                 appointment.getCreator().getUsername() + "', '" +
                 appointment.getTime().getStart() + "', '" +
                 appointment.getTime().getEnd() + "', '" +
-                appointment.getDescription() + "'";
+                appointment.getDescription() + "";
 
 
-        if (appointment.isAtMeetingRoom()){
-            query += "'', " + appointment.getMeetingRoom().getId();
+        if (appointment.isAtMeetingRoom() == 1 ){
+            query += "','', " + appointment.getMeetingRoom().getId();
         }
          else {
-            query += "'" + appointment.getPlace() + "', NULL";
+            query += "', '" + appointment.getPlace() + "', NULL";
          }
 
         query += ")";
@@ -171,9 +168,9 @@ public class DB {
     public static ArrayList<Appointment> getAppointments(Person person)
                 throws SQLException {
         String query = "SELECT * FROM appointment, participant WHERE "
-                + "meeting = 1 AND (appointment.creator = '" + person.getUsername() +
+                + "appointment.creator = '" + person.getUsername() +
                 "' OR (appointment.A_ID = participant.A_ID AND participant.username= '"
-                + person.getUsername() + "'))";
+                + person.getUsername() + "') ORDER BY start_time";
         Statement stat = dbConnection.createStatement();
 
         stat.executeQuery(query);
@@ -188,12 +185,13 @@ public class DB {
             Timespan time           = new Timespan(result.getTimestamp("start_time"), result.getTimestamp("end_time"));
             String description      = result.getString("description");
             String place            = result.getString("place");
-            MeetingRoom meetingroom = getMeetingRoom(result.getInt("M_ID"));
+            
 
             if (place != null) {
                 a.add(new Appointment(id, creator, time, description, place));
             }
             else {
+                MeetingRoom meetingroom = getMeetingRoom(result.getInt("M_ID"));
                 a.add(new Appointment(id, creator, time, description, meetingroom));
             }
         }
@@ -217,10 +215,10 @@ public class DB {
     }
 
 
-    public static void removeAppointment(Appointment appointment)
+    public static void removeAppointment(int id)
             throws SQLException {
         String query = "DELETE FROM appointment WHERE A_ID=" +
-                appointment.getId();
+                id;
         Statement stat = dbConnection.createStatement();
 
         stat.executeUpdate(query);
@@ -281,8 +279,9 @@ public class DB {
        while (result.next()){
             String name  = result.getString("name");
             int size  = result.getInt("size");
+            int id = result.getInt("M_ID");
 
-            r.add(new MeetingRoom(name,size));
+            r.add(new MeetingRoom(id,name,size));
        }
 
        return r;
@@ -298,7 +297,7 @@ public class DB {
 
        ResultSet result = stat.getResultSet();
        if (!result.next()) throw new SQLException("No MeetingRoom");
-       return new MeetingRoom(result.getString("name"), result.getInt("size"));
+       return new MeetingRoom(id, result.getString("name"), result.getInt("size"));
 
     }
 
@@ -311,12 +310,12 @@ public class DB {
 
     }
     
-    public static void addParticipants (Person person, Appointment appointment)
+    public static void addParticipant (String username, int m_id)
                throws SQLException {
          String query = "INSERT INTO participant "
                 + "(username, A_ID, status) VALUES ('" +
-                person.getUsername() + "', " +
-                appointment.getId() + ", '" +
+                username + "', " +
+                m_id + ", '" +
                 status.NOT_ANSWERED + "')";
 
         Statement stat = dbConnection.createStatement();
