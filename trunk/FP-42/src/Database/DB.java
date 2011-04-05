@@ -48,7 +48,7 @@ public class DB {
 
     public static boolean logIn(String username, String password)
             throws SQLException {
-        final String query = "SELECT Passord FROM BRUKER WHERE Brukernavn = '"+username+"'";
+        final String query = "SELECT password FROM user WHERE username = '"+username+"'";
         Statement stat = dbConnection.createStatement();
         stat.executeQuery(query);
 
@@ -56,13 +56,13 @@ public class DB {
 
         if (!result.next()) throw new SQLException("Wrong username/password");
         
-        if (result.getString("Passord").equals(password)) return true;
+        if (result.getString("password").equals(password)) return true;
         else return false;
     }
 
 
     public static ArrayList<Person> getPersons() throws SQLException{
-        final String query = "SELECT * FROM BRUKER ORDER BY Brukernavn ASC";
+        final String query = "SELECT * FROM user ORDER BY username ASC";
 
         Statement stat = dbConnection.createStatement();
         stat.executeQuery(query);
@@ -70,11 +70,12 @@ public class DB {
 
         ArrayList<Person> p = new ArrayList<Person>();
         while (result.next()){
-            String username  = result.getString("Brukernavn");
-            String name  = result.getString("Navn");
-            String email  = result.getString("Mailadresse");
+            String username  = result.getString("username");
+            String name  = result.getString("name");
+            String email  = result.getString("email");
+            String password = result.getString("password");
 
-            p.add(new Person(username, name, email));
+            p.add(new Person(username, name, email, password));
         }
 
         result.close();
@@ -83,17 +84,18 @@ public class DB {
         return p;
     }
 
-    public static Person getPerson(String brukernavn) throws SQLException{
-        final String query = "SELECT * FROM BRUKER WHERE Brukernavn = '"+brukernavn+"'";
+    public static Person getPerson(String username) throws SQLException{
+        final String query = "SELECT * FROM user WHERE username = '"+username+"'";
 
         Statement stat = dbConnection.createStatement();
         stat.executeQuery(query);
         ResultSet result = stat.getResultSet();
 
         if(result.next()){
-            String navn = result.getString("Navn");
-            String mail = result.getString("Mailadresse");
-            Person p = new Person(brukernavn, navn, mail);
+            String name = result.getString("name");
+            String email = result.getString("email");
+            String password = result.getString("password");
+            Person p = new Person(username, name, email, password);
 
             result.close();
             stat.close();
