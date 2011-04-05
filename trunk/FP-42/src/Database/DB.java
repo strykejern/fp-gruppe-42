@@ -171,8 +171,8 @@ public class DB {
     public static ArrayList<Appointment> getAppointments(Person person)
                 throws SQLException {
         String query = "SELECT * FROM appointment, participant WHERE "
-                + "meeting=false AND (appointment.creator='" + person.getUsername() +
-                "' OR (appointment.S_ID=participent.S_ID AND participent.username= '"
+                + "meeting = false AND (appointment.creator = '" + person.getUsername() +
+                "' OR (appointment.S_ID = participant.S_ID AND participant.username= '"
                 + person.getUsername() + "'));";
         Statement stat = dbConnection.createStatement();
 
