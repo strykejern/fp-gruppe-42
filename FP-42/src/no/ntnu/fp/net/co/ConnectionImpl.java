@@ -195,11 +195,13 @@ public class ConnectionImpl extends AbstractConnection {
       
         }
         KtnDatagram packet = constructDataPacket(msg);
-        if (sendDataPacketWithRetransmit(packet) == null){
-            System.out.println("Jeg er et dumt stystem!");
-            throw new IOException("No ack received");
+        KtnDatagram ack = null;
+        
+        while (!isValid(ack)){
+          ack = sendDataPacketWithRetransmit(packet);
             }
-
+            //System.out.println("Jeg er et dumt stystem!");
+            //throw new IOException("No ack received");
        
     }
 
@@ -390,12 +392,7 @@ public class ConnectionImpl extends AbstractConnection {
             case FIN_WAIT_2:
                 return packet.getFlag() == Flag.ACK && this.state == State.FIN_WAIT_1;
             case ESTABLISHED:
-                if(this.state == State.SYN_SENT && packet.getFlag() == Flag.SYN_ACK) {
-                    return true;
-                }
-                else if(this.state == State.SYN_RCVD && packet.getFlag() == Flag.SYN ) {
-                    return true;
-                }else if(packet.getSeq_nr() != nextSequenceNo) {
+                if(packet.getSeq_nr() != nextSequenceNo) {
                     return true;
                 }
                 else {
