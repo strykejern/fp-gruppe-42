@@ -46,18 +46,22 @@ public class DB {
                 databaseLocation, userName, password);
     }
 
-    public static boolean logIn(String username, String password)
-            throws SQLException {
+    public static boolean login(String username, String password){
         final String query = "SELECT password FROM user WHERE username = '"+username+"'";
-        Statement stat = dbConnection.createStatement();
-        stat.executeQuery(query);
+        try{
+            Statement stat = dbConnection.createStatement();
 
-        ResultSet result = stat.getResultSet();
+            stat.executeQuery(query);
 
-        if (!result.next()) return false;
+            ResultSet result = stat.getResultSet();
+
+            if (!result.next()) return false;
         
-        if (result.getString("password").equals(password)) return true;
-        else return false;
+            if (result.getString("password").equals(password)) return true;
+        } catch (SQLException e){
+
+        }
+        return false;
     }
 
 
