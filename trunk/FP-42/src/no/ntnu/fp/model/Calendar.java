@@ -44,6 +44,31 @@ public class Calendar {
         return false;
     }
 
+    public void newAppointment() {
+        Timestamp start = Timestamp.valueOf("2011-05-04 12:15:00");
+        Timestamp slutt = Timestamp.valueOf("2011-05-04 16:00:00");
+
+        int id = meetings.size()+1; //denne må vel hentes ut av databasen etter at den er lagret der?
+        Person creator = bruker;
+        Timespan time = new Timespan(start,slutt);
+        String description = /*String fra GUI, beskrivelse av møte/avtale*/"";
+        String place = "";
+        ArrayList<MeetingRoom> meetingRooms = DB.getMeetingRooms(/*input fra GUI, størrelse på ønsket rom*/);
+        MeetingRoom meetingRoom = (MeetingRoom) meetingRooms.get(0);
+        for(int i = 1; i < meetingRooms.size()-1; i++){
+            MeetingRoom nextMeetingRoom = (MeetingRoom) meetingRooms.get(i);
+            if(nextMeetingRoom.getSize()>meetingRoom.getSize()){
+                meetingRoom = nextMeetingRoom;
+            }
+        }
+        if (meetingRoom == null){
+            new Appointment(id, creator, time, description, place);
+        }
+        new Meeting(id, creator, time, description, meetingRoom);
+
+    }
+
+
     public void newMeeting() throws SQLException{
         /*
          * Bare en test så det ikke er error i filen
@@ -53,12 +78,12 @@ public class Calendar {
         Timestamp slutt = Timestamp.valueOf("2011-05-04 16:00:00");
 
 
-        int id = meetings.size()+1;
+        int id = meetings.size()+1; //denne må vel hentes ut av databasen etter at den er lagret der?
         Person creator = bruker;
         Timespan time = new Timespan(start,slutt);
         String description = /*String fra GUI, beskrivelse av møte/avtale*/"";
         String place = "";
-        ArrayList meetingRooms = DB.getMeetingRoom(/*input fra GUI, størrelse på ønsket rom*/);
+        ArrayList<MeetingRoom> meetingRooms = DB.getMeetingRooms(/*input fra GUI, størrelse på ønsket rom*/);
         MeetingRoom meetingRoom = (MeetingRoom) meetingRooms.get(0);
         for(int i = 1; i < meetingRooms.size()-1; i++){
             MeetingRoom nextMeetingRoom = (MeetingRoom) meetingRooms.get(i);
@@ -74,7 +99,7 @@ public class Calendar {
 
 
 
-    public void editAppointment(Appointment appointment, Date start, Date end, String description) {
+    public void editAppointment(Appointment appointment, Timestamp start, Timestamp end, String description, String place, ) {
         Timespan time = new Timespan(start, end);
         appointment.setTime(time);
         appointment.setDescription(description);
@@ -103,6 +128,10 @@ public class Calendar {
         catch(SQLException e) {
 
         }
+    }
+
+    public void sendMessage() {
+
     }
 
     public void recieveMessage() {
