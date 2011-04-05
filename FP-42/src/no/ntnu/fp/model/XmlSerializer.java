@@ -66,7 +66,6 @@ public class XmlSerializer {
 		Element email = new Element("email");
 		email.appendChild(aPerson.getEmail());
 		Element dateOfBirth = new Element("date-of-birth");
-		dateOfBirth.appendChild(format.format(aPerson.getDateOfBirth()));
 		element.appendChild(name);
 		element.appendChild(email);
 		element.appendChild(dateOfBirth);
@@ -74,8 +73,7 @@ public class XmlSerializer {
 	}
 	
 	private Person assemblePerson(Element personElement) throws ParseException {
-		String name = null, email = null, username = null;
-		Date date = null;
+		String name = null, email = null, username = null, password = null;
 		Element element = personElement.getFirstChildElement("name");
 		if (element != null) {
 			name = element.getValue();
@@ -83,12 +81,8 @@ public class XmlSerializer {
 		element = personElement.getFirstChildElement("email");
 		if (element != null) {
 			email = element.getValue();
-		}
-		element = personElement.getFirstChildElement("date-of-birth");
-		if (element != null) {
-			date = parseDate(element.getValue());
-		}
-		return new Person(username, name, email);
+            }
+		return new Person(username, name, email, password);
 	}
 	
 	/**
