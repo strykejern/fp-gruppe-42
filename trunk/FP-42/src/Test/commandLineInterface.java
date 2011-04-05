@@ -149,12 +149,13 @@ public class commandLineInterface {
         else if(command.equals("deleteappointment")){
             int id = Integer.parseInt(input.next());
             try{
-            DB.removeAppointment(id);
+                DB.removeAppointment(id);
+                System.out.println("Appointment " +id+ " has been deleted!");
             }
             catch(SQLException e) {
-
             }
         }
+
         else if(command.equals("addparticipant")){
             try{
                 DB.addParticipant(input.next(), Integer.parseInt(input.next()));
@@ -204,25 +205,18 @@ public class commandLineInterface {
 
     static void help(){
         System.out.println("");
-        System.out.println("addappointment -- type(\"meeting\"/\"appointment\") start end place/#meetingRoom description. Want to book room? Type first showmeetingrooms");
-        System.out.println("");
-        System.out.println("showmeetingrooms -- size");
-        System.out.println("");
-        System.out.println("editappointment -- id start end place/#meetingRoom description");
-        System.out.println("");
-        System.out.println("deleteappointment -- id");
-        System.out.println("");
-        System.out.println("addparticipant -- meetingID personID[,personID,,,]");
-        System.out.println("");
-        System.out.println("addmeetingroom -- size and name");
-        System.out.println("");
-        System.out.println("answerinvitation -- id yes/no");
-        System.out.println("");
-        System.out.println("viewcalendar");
-        System.out.println("");
-        System.out.println("close stops the program");
-        System.out.println("");
-        System.out.println("help views the help menu");
+        System.out.println("Commands");
+        System.out.println("*****************************************************************************************************************************************************");
+        System.out.println("** addappointment ** -- type(\"meeting\"/\"appointment\") start end place/#meetingRoom description. Want to book room? Type first showmeetingrooms");
+        System.out.println("** showmeetingrooms ** -- size");
+        System.out.println("** editappointment ** -- id start end place/#meetingRoom description");
+        System.out.println("** deleteappointment ** -- id");
+        System.out.println("** addparticipant ** -- meetingID personID[,personID,,,]");
+        System.out.println("** addmeetingroom ** -- size and name");
+        System.out.println("** answerinvitation ** -- id yes/no");
+        System.out.println("** viewcalendar ** -- views users calendar");
+        System.out.println("** close ** --  stops the program");
+        System.out.println("** help ** -- views the help menu");
         System.out.println("");
     }
 }
