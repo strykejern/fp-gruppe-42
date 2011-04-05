@@ -395,6 +395,7 @@ public class ConnectionImpl extends AbstractConnection {
                 if(packet.getSeq_nr() != nextSequenceNo) {
                     return true;
                 }
+
                 else {
                     System.out.println("Nr 4 "+" VI ER HER .!!:!:!:!:!:##%&(/&)&/n()()&)&()&()&)(&()()");
                     return false;
