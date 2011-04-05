@@ -8,6 +8,7 @@ package Test;
 import Database.DB;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -57,10 +58,11 @@ public class commandLineInterface {
         System.out.println("SUCCESS! Logged in as \"" + username + "\"");
 
         help();
-
+        while (true) {
         String command = input.next();
 
         if (command.equals("addappointment")){
+            String type = input.next();
             Timestamp start = Timestamp.valueOf(input.next() + " " + input.next());
             Timestamp end = Timestamp.valueOf(input.next() + " " + input.next());
             Timespan span = new Timespan(start, end);
@@ -69,23 +71,47 @@ public class commandLineInterface {
             String description = input.nextLine();
 
             Appointment app;
+            int meeting = 0;
+            if (type.equals("meeting")){
+                meeting = 1;
+            }
+
             if (place.startsWith("#")){
                 MeetingRoom room;
+
                 try {
                     room = DB.getMeetingRoom(Integer.parseInt(place.substring(1)));
+                    
                 } catch (SQLException ex) {
                     System.out.println("FAIL: " + ex.getMessage());
                     return;
                 }
+                
                 app = new Appointment(me, span, description, room);
             }
             else{
                 app = new Appointment(me, span, description, place);
             }
             try {
-                DB.addAppointment(app, false);
+                DB.addAppointment(app, meeting);
             } catch (SQLException ex) {
                 System.out.println("FAIL: " + ex.getMessage());
+            }
+
+        }
+        else if(command.equals("showmeetingrooms")) {
+            int size = Integer.parseInt(input.next());
+            ArrayList<MeetingRoom> rooms = new ArrayList<MeetingRoom>();
+                try {
+                    rooms = DB.getMeetingRooms(size);
+                } catch (SQLException ex) {
+
+                }
+            if(rooms.isEmpty()) {
+                System.out.println("No availeble rooms of this size");
+            }
+            for (MeetingRoom m : rooms) {
+                System.out.println(m.toString());
             }
 
         }
@@ -121,10 +147,31 @@ public class commandLineInterface {
 
         }
         else if(command.equals("deleteappointment")){
+            int id = Integer.parseInt(input.next());
+            try{
+            DB.removeAppointment(id);
+            }
+            catch(SQLException e) {
 
+            }
         }
         else if(command.equals("addparticipant")){
+            try{
+                DB.addParticipant(input.next(), Integer.parseInt(input.next()));
+            }
+            catch(SQLException e){}
+        }
+        else if(command.equals("addmeetingroom")) {
+            int size = Integer.parseInt(input.next());
+            String name = input.next();
 
+            try{
+                DB.addMeetingRoom(new MeetingRoom(name, size));
+                System.out.println(name + "added to database");
+            }
+            catch(SQLException e) {
+
+            }
         }
         else if(command.equals("answerinvitation")){
 
@@ -140,25 +187,42 @@ public class commandLineInterface {
                 System.out.println("FAIL: " + ex.getMessage());
             }
         }
+        else if(command.equals("help")) {
+            help();
+        }
+
+        else if(command.equals("close")) {
+            break;
+        }
+        
         else{
             System.out.println("Invalid command");
         }
+       }
 
     }
 
     static void help(){
         System.out.println("");
-        System.out.println("addappointment start end place/#meetingRoom description");
+        System.out.println("addappointment -- type(\"meeting\"/\"appointment\") start end place/#meetingRoom description. Want to book room? Type first showmeetingrooms");
         System.out.println("");
-        System.out.println("editappointment id start end place/#meetingRoom description");
+        System.out.println("showmeetingrooms -- size");
         System.out.println("");
-        System.out.println("deleteappointment id");
+        System.out.println("editappointment -- id start end place/#meetingRoom description");
         System.out.println("");
-        System.out.println("addparticipant meetingID personID[,personID,,,]");
+        System.out.println("deleteappointment -- id");
         System.out.println("");
-        System.out.println("answerinvitation id yes/no");
+        System.out.println("addparticipant -- meetingID personID[,personID,,,]");
+        System.out.println("");
+        System.out.println("addmeetingroom -- size and name");
+        System.out.println("");
+        System.out.println("answerinvitation -- id yes/no");
         System.out.println("");
         System.out.println("viewcalendar");
+        System.out.println("");
+        System.out.println("close stops the program");
+        System.out.println("");
+        System.out.println("help views the help menu");
         System.out.println("");
     }
 }
