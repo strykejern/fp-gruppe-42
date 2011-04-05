@@ -107,4 +107,8 @@ public class Appointment {
     public boolean isAtMeetingRoom(){
         return atMeetingRoom;
     }
+
+    public String toString () {
+        return "Møte er kl :" + getTime().toString() + "i rom " + getPlace() + "og gjelder " + getDescription();
+    }
 }
