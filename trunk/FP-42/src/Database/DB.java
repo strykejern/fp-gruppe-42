@@ -139,13 +139,13 @@ public class DB {
 
     }
 
-    public static void addAppointment(Appointment appointment, boolean mote)
+    public static void addAppointment(Appointment appointment, boolean meeting)
             throws SQLException {
 
 
-        String query = "INSERT INTO Appointment "
-                + "(Mote, Oppretter, Starttidspunkt, Slutttidspunkt, Beskrivelse, Sted, M_ID) VALUES ("+
-                mote + ",'" +
+        String query = "INSERT INTO appointment "
+                + "(meeting, creator, start_time, end_time, description, place, M_ID) VALUES ("+
+                meeting + ",'" +
                 appointment.getCreator().getUsername() + "', '" +
                 appointment.getTime().getStart() + "', '" +
                 appointment.getTime().getEnd() + "', '" +
