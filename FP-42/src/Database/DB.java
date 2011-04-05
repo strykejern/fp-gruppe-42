@@ -54,7 +54,7 @@ public class DB {
 
         ResultSet result = stat.getResultSet();
 
-        if (!result.next()) throw new SQLException("Wrong username/password");
+        if (!result.next()) return false;
         
         if (result.getString("password").equals(password)) return true;
         else return false;
@@ -107,27 +107,27 @@ public class DB {
         
     }
 
-    public static void addPerson(Person bruker)
+    public static void addPerson(Person user)
             throws SQLException {
 
 
-        String query = "INSERT INTO BRUKER "
-                + "(Brukernavn, Passord, Navn, Mailadresse) VALUES ('" +
-                bruker.getUsername() + "', '" +
-                bruker.getPassword() + "', '" +
-                bruker.getName() + "', '" +
-                bruker.getEmail() + "')";
+        String query = "INSERT INTO user "
+                + "(username, password, name, email) VALUES ('" +
+                user.getUsername() + "', '" +
+                user.getPassword() + "', '" +
+                user.getName() + "', '" +
+                user.getEmail() + "')";
 
         Statement stat = dbConnection.createStatement();
 
         stat.executeUpdate(query);
     }
 
-    public static void removePerson(Person bruker)
+    public static void removePerson(Person user)
             throws SQLException {
 
 
-        String query = "DELETE FROM BRUKER WHERE Brukernavn='"+bruker.getUsername() +"'";
+        String query = "DELETE FROM user WHERE username='"+user.getUsername() +"'";
 
         Statement stat = dbConnection.createStatement();
 
