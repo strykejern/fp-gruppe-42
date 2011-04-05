@@ -168,7 +168,7 @@ public class DB {
                 "OR (Appointment.S_ID=deltaker.S_ID AND deltaker.brukernavn=" + person.getUsername() + "));";
         Statement stat = dbConnection.createStatement();
 
-        stat.executeUpdate(query);
+        stat.executeQuery(query);
 
         ResultSet result = stat.getResultSet();
 
