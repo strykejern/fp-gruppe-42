@@ -149,7 +149,7 @@ public class DB {
                 appointment.getCreator().getUsername() + "', '" +
                 appointment.getTime().getStart() + "', '" +
                 appointment.getTime().getEnd() + "', '" +
-                appointment.getDescription() + "', ";
+                appointment.getDescription() + "'";
 
 
         if (appointment.isAtMeetingRoom()){
@@ -159,7 +159,7 @@ public class DB {
             query += "'" + appointment.getPlace() + "', NULL";
          }
 
-        query += ");";
+        query += ")";
 
         System.out.println(query);
 
@@ -173,7 +173,7 @@ public class DB {
         String query = "SELECT * FROM appointment, participant WHERE "
                 + "meeting = 1 AND (appointment.creator = '" + person.getUsername() +
                 "' OR (appointment.A_ID = participant.A_ID AND participant.username= '"
-                + person.getUsername() + "'));";
+                + person.getUsername() + "'))";
         Statement stat = dbConnection.createStatement();
 
         stat.executeQuery(query);
@@ -203,7 +203,8 @@ public class DB {
     public static void editAppointment(Appointment appointment)
         throws SQLException{
 
-        String query ="UPDATE Appointment" + "(start_time, end_time, description, Sted) SET (" +
+        String query ="UPDATE appointment" +
+                "(start_time, end_time, description, place) SET (" +
                 appointment.getTime().getStart() +", " +
                 appointment.getTime().getEnd() + ", " +
                 appointment.getDescription() + ", " +
@@ -218,7 +219,8 @@ public class DB {
 
     public static void removeAppointment(Appointment appointment)
             throws SQLException {
-        String query = "DELETE FROM Appointment WHERE A_ID=" + appointment.getId() + ";";
+        String query = "DELETE FROM appointment WHERE A_ID=" +
+                appointment.getId();
         Statement stat = dbConnection.createStatement();
 
         stat.executeUpdate(query);
@@ -226,8 +228,10 @@ public class DB {
 
         public static ArrayList<Meeting> getMeetings(Person person)
                 throws SQLException {
-        String query = "SELECT * FROM Appointment, deltaker WHERE Mote=TRUE AND (creator=" + person.getUsername() +
-                "OR (Appointment.A_ID=deltaker.A_ID AND deltaker.brukernavn=" + person.getUsername() + "));";
+        String query = "SELECT * FROM appointment, participant WHERE "
+                + "meeting = 1 AND (creator = '" + person.getUsername() + "' OR "
+                + "(appointment.A_ID = participant.A_ID AND "
+                + "participant.username = '" + person.getUsername() + "'))";
         Statement stat = dbConnection.createStatement();
 
         stat.executeQuery(query);
@@ -237,9 +241,9 @@ public class DB {
         while (result.next()){
             int id = result.getInt("A_ID");
             Person creator = getPerson(result.getString("creator"));
-            Timespan time = new Timespan(result.getTimestamp("Starttid"), result.getTimestamp("Sluttid"));
+            Timespan time = new Timespan(result.getTimestamp("start_time"), result.getTimestamp("Sluttid"));
             String description = result.getString("description");
-            String place = result.getString("Sted");
+            String place = result.getString("place");
             MeetingRoom meetingroom = getMeetingRoom(result.getInt("M_ID"));
             if (place != null) {
                 m.add(new Meeting(id, creator, time, description, place));
@@ -255,8 +259,8 @@ public class DB {
     public static void addMeetingRoom(MeetingRoom room)
             throws SQLException {
 
-        String query = "INSERT INTO MOTEROM "
-                + "(Navn, Storrelse) VALUES ('" +
+        String query = "INSERT INTO meeting_room "
+                + "(name, size) VALUES ('" +
                 room.getName() + "', " +
                 room.getSize()  + ")";
 
@@ -267,15 +271,16 @@ public class DB {
 
     public static ArrayList<MeetingRoom> getMeetingRooms (int number)
              throws SQLException {
-       String query = "SELECT * FROM MOTEROM WHERE Storrelse>=" + number + " ORDER BY Storrelse ASC";
+       String query = "SELECT * FROM meeting_room WHERE size >= "+ number +
+               " ORDER BY size ASC";
        Statement stat = dbConnection.createStatement();
        stat.executeQuery(query);
 
        ResultSet result = stat.getResultSet();
        ArrayList<MeetingRoom> r = new ArrayList<MeetingRoom>();
        while (result.next()){
-            String name  = result.getString("Navn");
-            int size  = result.getInt("Storrelse");
+            String name  = result.getString("name");
+            int size  = result.getInt("size");
 
             r.add(new MeetingRoom(name,size));
        }
@@ -287,19 +292,19 @@ public class DB {
 
         public static MeetingRoom getMeetingRoom (int id)
              throws SQLException {
-       String query = "SELECT * FROM MOTEROM WHERE M_ID=" +id+ ";";
+       String query = "SELECT * FROM meeting_room WHERE M_ID = " +id;
        Statement stat = dbConnection.createStatement();
        stat.executeQuery(query);
 
        ResultSet result = stat.getResultSet();
        if (!result.next()) throw new SQLException("No MeetingRoom");
-       return new MeetingRoom(result.getString("Navn"), result.getInt("Storrelse"));
+       return new MeetingRoom(result.getString("name"), result.getInt("size"));
 
     }
 
     public static void removeMeetingRoom (int id)
               throws SQLException {
-       String query = "DELETE FROM MOTEROM WHERE M_ID=" + id + ";";
+       String query = "DELETE FROM meeting_room WHERE M_ID = " + id;
        Statement stat = dbConnection.createStatement();
        stat.executeUpdate(query);
 
@@ -308,8 +313,8 @@ public class DB {
     
     public static void addParticipants (Person person, Appointment appointment)
                throws SQLException {
-         String query = "INSERT INTO DELTAKER "
-                + "(Brukernavn, A_ID, Status) VALUES ('" +
+         String query = "INSERT INTO participant "
+                + "(username, A_ID, status) VALUES ('" +
                 person.getUsername() + "', " +
                 appointment.getId() + ", '" +
                 status.NOT_ANSWERED + "')";
@@ -321,8 +326,8 @@ public class DB {
     
     public static ArrayList<Person> getParticipants(Meeting meeting, status st)
             throws SQLException {
-       String query = "SELECT * FROM DELTAKER WHERE A_ID=" +
-               meeting.getId() + "AND status='" + st + "';";
+       String query = "SELECT * FROM participant WHERE A_ID = " +
+               meeting.getId() + "AND status='" + st + "'";
 
        Statement stat = dbConnection.createStatement();
        stat.executeQuery(query);
@@ -331,7 +336,7 @@ public class DB {
 
        ArrayList<Person> p = new ArrayList<Person>();
        while (result.next()){
-            String username  = result.getString("Brukernavn");
+            String username  = result.getString("username");
 
             p.add(getPerson(username)); 
        }
@@ -340,9 +345,9 @@ public class DB {
 
     public static void changeStatus(Person person, Meeting meeting, status st)
         throws SQLException{
-        String query = "UPDATE DELTAKER WHERE Brukernavn='" + person.getUsername()
+        String query = "UPDATE participant WHERE username = '" + person.getUsername()
                 + "' AND M_ID=" + meeting.getId()
-                + "(Status) VALUES ('"
+                + "(status) VALUES ('"
                 + st
                 +"')";
 
@@ -354,19 +359,19 @@ public class DB {
         
     public static void removeParticipant(Person person)
                throws SQLException {
-        String query = "DELETE FROM DELTAKER WHERE Brukernavn='"+person.getUsername() + "'";
+        String query = "DELETE FROM participant WHERE username = '"+person.getUsername() + "'";
 
         Statement stat = dbConnection.createStatement();
         stat.executeUpdate(query);
         
     }
 
-    public static void addMessage(Message message, Person til, Person fra)
+    public static void addMessage(Message message, Person to, Person from)
                 throws SQLException {
-        String query = "INSERT INTO MELDING"
-                + "(Til, Fra, Emne, Tekst) VALUES ('"+
-                til.getUsername()+"', '"+
-                fra.getUsername()+"', '"+
+        String query = "INSERT INTO message"
+                + "(to, from, subject, text) VALUES ('"+
+                to.getUsername()+"', '"+
+                from.getUsername()+"', '"+
                 message.getSubject()+"', '"+
                 message.getContent()+"')";
 
@@ -379,7 +384,7 @@ public class DB {
     public static Message getMessage(int id)
                 throws SQLException{
 
-        String query = "SELECT * FROM MELDING WHERE M_ID= "+id;
+        String query = "SELECT * FROM message WHERE M_ID= "+id+"";
 
         Statement stat = dbConnection.createStatement();
         stat.executeQuery(query);
@@ -387,8 +392,8 @@ public class DB {
         ResultSet result = stat.getResultSet();
 
         if(result!=null){
-            String subject = result.getString("Emne");
-            String content = result.getString("Tekst");
+            String subject = result.getString("subject");
+            String content = result.getString("text");
             Message m = new Message(subject, content);
 
             result.close();
@@ -400,25 +405,25 @@ public class DB {
 
     public static void removemessage(int id)
                 throws SQLException{
-        String query = "DELETE FROM MELDING WHERE M_ID= "+id;
+        String query = "DELETE FROM message WHERE M_ID= "+id;
 
         Statement stat = dbConnection.createStatement();
         stat.executeUpdate(query);
     }
 
-     public static void addInvitation(Invitation invitation, Person til, Person fra)
+     public static void addInvitation(Invitation invitation, Person to, Person from)
                 throws SQLException {
-                String tekst = "";
-                tekst += "Møte holdes " +invitation.getMeet().getTime().toString();
-                tekst += " i rom " + invitation.getMeet().getMeetingRoom().getName();
-                tekst += " og gjelder " + invitation.getMeet().getDescription();
+                String text = "";
+                text += "Møte holdes " +invitation.getMeet().getTime().toString();
+                text += " i rom " + invitation.getMeet().getMeetingRoom().getName();
+                text += " og gjelder " + invitation.getMeet().getDescription();
 
-        String query = "INSERT INTO MELDING "
-                + "(Til, Fra, Emne, Tekst) VALUES ('"+
-                til.getUsername()+"', '"+
-                fra.getUsername()+"','"+
+        String query = "INSERT INTO message "
+                + "(to, from, subject, text) VALUES ('"+
+                to.getUsername()+"', '"+
+                from.getUsername()+"','"+
                 invitation.getMeet().getDescription()+"','"+
-                tekst+"')";
+                text+"')";
 
         Statement stat = dbConnection.createStatement();
         stat.executeUpdate(query);
