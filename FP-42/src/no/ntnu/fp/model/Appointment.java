@@ -19,7 +19,7 @@ public class Appointment {
     private String description;
     private String place;
     private MeetingRoom meetingRoom;
-    private boolean atMeetingRoom;
+    private int atMeetingRoom;
 
     public Appointment(int id, Person creator, Timespan time, String description, String place) {
         this.id = id;
@@ -27,7 +27,7 @@ public class Appointment {
         this.time = time;
         this.description = description;
         this.place = place;
-        atMeetingRoom = false;
+        atMeetingRoom = 0;
     }
 
     public Appointment(int id, Person creator, Timespan time,String description, MeetingRoom meetingRoom) {
@@ -36,7 +36,7 @@ public class Appointment {
         this.time = time;
         this.description = description;
         this.meetingRoom = meetingRoom;
-        atMeetingRoom = true;
+        atMeetingRoom = 1;
     }
 
     public Appointment(Person creator, Timespan time, String description, MeetingRoom meetingRoom) {
@@ -44,7 +44,7 @@ public class Appointment {
         this.time = time;
         this.description = description;
         this.meetingRoom = meetingRoom;
-        atMeetingRoom = true;
+        atMeetingRoom = 1;
     }
 
     public Appointment(Person creator, Timespan time, String description, String place) {
@@ -52,7 +52,7 @@ public class Appointment {
         this.time = time;
         this.description = description;
         this.place = place;
-        atMeetingRoom = false;
+        atMeetingRoom = 0;
     }
 
 
@@ -104,11 +104,19 @@ public class Appointment {
         this.place = place;
     }
 
-    public boolean isAtMeetingRoom(){
+    public int isAtMeetingRoom(){
         return atMeetingRoom;
     }
 
     public String toString () {
-        return "Møte er kl :" + getTime().toString() + "i rom " + getPlace() + "og gjelder " + getDescription();
+        String room;
+        
+        if(atMeetingRoom == 1) {
+            room = meetingRoom.getName();
+        }
+        else{
+            room = getPlace();
+        }
+        return "Møte IDen er "+getId()+" og " + getTime().toString() + " i rom " + room + " og gjelder " + getDescription();
     }
 }
