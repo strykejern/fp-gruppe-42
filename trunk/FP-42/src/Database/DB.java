@@ -165,6 +165,27 @@ public class DB {
         stat.executeUpdate(query);
     }
 
+
+    /*public static Appointment getAppointment (int id, Person person) throws SQLException {
+        String guery = "SELECT * FROM appointment WHERE"
+                + "appointment.creator = '" + person.getUsername() +
+                "')";
+        Statement stat = dbConnection.createStatement();
+
+        stat.executeQuery(guery);
+        ResultSet result = stat.getResultSet();
+        Appointment a;
+        while(result.next()){
+            Person creator          = getPerson(result.getString("creator"));
+            Timespan time           = new Timespan(result.getTimestamp("start_time"), result.getTimestamp("end_time"));
+            String description      = result.getString("description");
+            String place            = result.getString("place");
+
+            a  = new Appointment(creator, time, description, place);
+        }
+        return a;
+    }*/
+
     public static ArrayList<Appointment> getAppointments(Person person)
                 throws SQLException {
         String query = "SELECT * FROM appointment, participant WHERE "
@@ -202,11 +223,10 @@ public class DB {
         throws SQLException{
 
         String query ="UPDATE appointment" +
-                "(start_time, end_time, description, place) SET (" +
-                appointment.getTime().getStart() +", " +
-                appointment.getTime().getEnd() + ", " +
-                appointment.getDescription() + ", " +
-                appointment.getPlace() + ",)";
+                "(start_time, end_time, description, place) SET ('" + appointment.getTime().getStart() + "', '" +
+                appointment.getTime().getEnd() + "', '" +
+                appointment.getDescription() + "', '" +
+                appointment.getPlace() + "',)";
 
         Statement stat = dbConnection.createStatement();
 
