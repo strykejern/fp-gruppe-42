@@ -171,8 +171,8 @@ public class DB {
     public static ArrayList<Appointment> getAppointments(Person person)
                 throws SQLException {
         String query = "SELECT * FROM appointment, participant WHERE "
-                + "meeting = false AND (appointment.creator = '" + person.getUsername() +
-                "' OR (appointment.S_ID = participant.S_ID AND participant.username= '"
+                + "meeting = 1 AND (appointment.creator = '" + person.getUsername() +
+                "' OR (appointment.A_ID = participant.A_ID AND participant.username= '"
                 + person.getUsername() + "'));";
         Statement stat = dbConnection.createStatement();
 
@@ -183,7 +183,7 @@ public class DB {
         ArrayList<Appointment> a = new ArrayList<Appointment>();
 
         while (result.next()){
-            int id                  = result.getInt("S_ID");
+            int id                  = result.getInt("A_ID");
             Person creator          = getPerson(result.getString("creator"));
             Timespan time           = new Timespan(result.getTimestamp("start_time"), result.getTimestamp("end_time"));
             String description      = result.getString("description");
@@ -218,7 +218,7 @@ public class DB {
 
     public static void removeAppointment(Appointment appointment)
             throws SQLException {
-        String query = "DELETE FROM Appointment WHERE S_ID=" + appointment.getId() + ";";
+        String query = "DELETE FROM Appointment WHERE A_ID=" + appointment.getId() + ";";
         Statement stat = dbConnection.createStatement();
 
         stat.executeUpdate(query);
@@ -227,7 +227,7 @@ public class DB {
         public static ArrayList<Meeting> getMeetings(Person person)
                 throws SQLException {
         String query = "SELECT * FROM Appointment, deltaker WHERE Mote=TRUE AND (creator=" + person.getUsername() +
-                "OR (Appointment.S_ID=deltaker.S_ID AND deltaker.brukernavn=" + person.getUsername() + "));";
+                "OR (Appointment.A_ID=deltaker.A_ID AND deltaker.brukernavn=" + person.getUsername() + "));";
         Statement stat = dbConnection.createStatement();
 
         stat.executeQuery(query);
@@ -235,7 +235,7 @@ public class DB {
         ResultSet result = stat.getResultSet();
         ArrayList<Meeting> m = new ArrayList<Meeting>();
         while (result.next()){
-            int id = result.getInt("S_ID");
+            int id = result.getInt("A_ID");
             Person creator = getPerson(result.getString("creator"));
             Timespan time = new Timespan(result.getTimestamp("Starttid"), result.getTimestamp("Sluttid"));
             String description = result.getString("description");
@@ -309,7 +309,7 @@ public class DB {
     public static void addParticipants (Person person, Appointment appointment)
                throws SQLException {
          String query = "INSERT INTO DELTAKER "
-                + "(Brukernavn, S_ID, Status) VALUES ('" +
+                + "(Brukernavn, A_ID, Status) VALUES ('" +
                 person.getUsername() + "', " +
                 appointment.getId() + ", '" +
                 status.NOT_ANSWERED + "')";
@@ -321,7 +321,7 @@ public class DB {
     
     public static ArrayList<Person> getParticipants(Meeting meeting, status st)
             throws SQLException {
-       String query = "SELECT * FROM DELTAKER WHERE S_ID=" +
+       String query = "SELECT * FROM DELTAKER WHERE A_ID=" +
                meeting.getId() + "AND status='" + st + "';";
 
        Statement stat = dbConnection.createStatement();
