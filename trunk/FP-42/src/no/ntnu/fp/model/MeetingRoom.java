@@ -21,6 +21,14 @@ public class MeetingRoom {
         this.size = size;
     }
 
+    public MeetingRoom(int id, String name, int size) {
+
+        this.id = id;
+        this.name = name;
+        this.size = size;
+
+    }
+
     public int getId() {
         return id;
     }
@@ -31,6 +39,10 @@ public class MeetingRoom {
 
     public int getSize() {
         return size;
+    }
+
+    public String toString() {
+        return "ID: " + id + " Navn: " + name + " Size: " + size;
     }
 
 }
