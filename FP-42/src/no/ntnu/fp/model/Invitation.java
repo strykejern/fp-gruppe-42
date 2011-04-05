@@ -57,5 +57,9 @@ public class Invitation {
         this.meet = meet;
     }
 
+    public String toString() {
+        return "Invitasjon til" + meet.toString() + " og din status er:" + getAnswered().toString();
+    }
+
     
 }
