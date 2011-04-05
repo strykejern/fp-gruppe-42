@@ -170,8 +170,10 @@ public class DB {
 
     public static ArrayList<Appointment> getAppointments(Person person)
                 throws SQLException {
-        String query = "SELECT * FROM appointment, participant WHERE meeting=false AND (appointment.creator='" + person.getUsername() +
-                "' OR (appointment.S_ID=participent.S_ID AND participent.username=" + person.getUsername() + "));";
+        String query = "SELECT * FROM appointment, participant WHERE "
+                + "meeting=false AND (appointment.creator='" + person.getUsername() +
+                "' OR (appointment.S_ID=participent.S_ID AND participent.username= '"
+                + person.getUsername() + "'));";
         Statement stat = dbConnection.createStatement();
 
         stat.executeQuery(query);
