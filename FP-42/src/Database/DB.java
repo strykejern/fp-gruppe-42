@@ -137,7 +137,7 @@ public class DB {
             throws SQLException {
 
 
-        String query = "INSERT INTO SUPERAVTALE "
+        String query = "INSERT INTO Appointment "
                 + "(Mote, Oppretter, Starttidspunkt, Slutttidspunkt, Beskrivelse, Sted, M_ID) VALUES ("+
                 mote + ",'" +
                 appointment.getCreator().getUsername() + "', '" +
@@ -164,8 +164,8 @@ public class DB {
 
     public static ArrayList<Appointment> getAppointments(Person person)
                 throws SQLException {
-        String query = "SELECT * FROM avtale, deltaker WHERE Mote=false AND (avtale.Oppretter=" + person.getUsername() +
-                "OR (avtale.S_ID=deltaker.S_ID AND deltaker.brukernavn=" + person.getUsername() + "));";
+        String query = "SELECT * FROM Appointment, deltaker WHERE Mote=false AND (Appointment.Oppretter=" + person.getUsername() +
+                "OR (Appointment.S_ID=deltaker.S_ID AND deltaker.brukernavn=" + person.getUsername() + "));";
         Statement stat = dbConnection.createStatement();
 
         stat.executeUpdate(query);
@@ -195,7 +195,7 @@ public class DB {
     public static void editAppointment(Appointment appointment)
         throws SQLException{
 
-        String query ="UPDATE avtale" + "(Starttidspunkt, Sluttidspunkt, Beskrivelse, Sted) SET (" +
+        String query ="UPDATE Appointment" + "(Starttidspunkt, Sluttidspunkt, Beskrivelse, Sted) SET (" +
                 appointment.getTime().getStart() +", " +
                 appointment.getTime().getEnd() + ", " +
                 appointment.getDescription() + ", " +
@@ -210,7 +210,7 @@ public class DB {
 
     public static void removeAppointment(Appointment appointment)
             throws SQLException {
-        String query = "DELETE * FROM avtale WHERE S_ID=" + appointment.getId() + ";";
+        String query = "DELETE FROM Appointment WHERE S_ID=" + appointment.getId() + ";";
         Statement stat = dbConnection.createStatement();
 
         stat.executeUpdate(query);
@@ -218,11 +218,11 @@ public class DB {
 
         public static ArrayList<Meeting> getMeetings(Person person)
                 throws SQLException {
-        String query = "SELECT * FROM avtale, deltaker WHERE Mote=TRUE AND (Oppretter=" + person.getUsername() +
-                "OR (avtale.S_ID=deltaker.S_ID AND deltaker.brukernavn=" + person.getUsername() + "));";
+        String query = "SELECT * FROM Appointment, deltaker WHERE Mote=TRUE AND (Oppretter=" + person.getUsername() +
+                "OR (Appointment.S_ID=deltaker.S_ID AND deltaker.brukernavn=" + person.getUsername() + "));";
         Statement stat = dbConnection.createStatement();
 
-        stat.executeUpdate(query);
+        stat.executeQuery(query);
 
         ResultSet result = stat.getResultSet();
         ArrayList<Meeting> m = new ArrayList<Meeting>();
