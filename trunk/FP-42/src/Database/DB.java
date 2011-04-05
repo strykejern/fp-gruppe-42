@@ -170,8 +170,8 @@ public class DB {
 
     public static ArrayList<Appointment> getAppointments(Person person)
                 throws SQLException {
-        String query = "SELECT * FROM Appointment, deltaker WHERE Mote=false AND (Appointment.Oppretter=" + person.getUsername() +
-                "OR (Appointment.S_ID=deltaker.S_ID AND deltaker.brukernavn=" + person.getUsername() + "));";
+        String query = "SELECT * FROM appointment, participant WHERE meeting=false AND (appointment.creator=" + person.getUsername() +
+                "OR (appointment.S_ID=participent.S_ID AND participent.username=" + person.getUsername() + "));";
         Statement stat = dbConnection.createStatement();
 
         stat.executeQuery(query);
@@ -182,10 +182,10 @@ public class DB {
 
         while (result.next()){
             int id                  = result.getInt("S_ID");
-            Person creator          = getPerson(result.getString("Oppretter"));
-            Timespan time           = new Timespan(result.getTimestamp("Starttid"), result.getTimestamp("Slutttid"));
-            String description      = result.getString("Beskrivelse");
-            String place            = result.getString("Sted");
+            Person creator          = getPerson(result.getString("creator"));
+            Timespan time           = new Timespan(result.getTimestamp("start_time"), result.getTimestamp("end_time"));
+            String description      = result.getString("description");
+            String place            = result.getString("place");
             MeetingRoom meetingroom = getMeetingRoom(result.getInt("M_ID"));
 
             if (place != null) {
@@ -201,7 +201,7 @@ public class DB {
     public static void editAppointment(Appointment appointment)
         throws SQLException{
 
-        String query ="UPDATE Appointment" + "(Starttidspunkt, Sluttidspunkt, Beskrivelse, Sted) SET (" +
+        String query ="UPDATE Appointment" + "(start_time, Sluttidspunkt, Beskrivelse, Sted) SET (" +
                 appointment.getTime().getStart() +", " +
                 appointment.getTime().getEnd() + ", " +
                 appointment.getDescription() + ", " +
@@ -224,7 +224,7 @@ public class DB {
 
         public static ArrayList<Meeting> getMeetings(Person person)
                 throws SQLException {
-        String query = "SELECT * FROM Appointment, deltaker WHERE Mote=TRUE AND (Oppretter=" + person.getUsername() +
+        String query = "SELECT * FROM Appointment, deltaker WHERE Mote=TRUE AND (creator=" + person.getUsername() +
                 "OR (Appointment.S_ID=deltaker.S_ID AND deltaker.brukernavn=" + person.getUsername() + "));";
         Statement stat = dbConnection.createStatement();
 
@@ -234,7 +234,7 @@ public class DB {
         ArrayList<Meeting> m = new ArrayList<Meeting>();
         while (result.next()){
             int id = result.getInt("S_ID");
-            Person creator = getPerson(result.getString("Oppretter"));
+            Person creator = getPerson(result.getString("creator"));
             Timespan time = new Timespan(result.getTimestamp("Starttid"), result.getTimestamp("Sluttid"));
             String description = result.getString("Beskrivelse");
             String place = result.getString("Sted");
