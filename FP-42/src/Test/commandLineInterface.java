@@ -102,7 +102,10 @@ public class commandLineInterface {
 
             }
             else if(command.equals("showmeetingrooms")) {
+
+                System.out.println("");
                 int size = Integer.parseInt(arguments.next());
+
                 ArrayList<MeetingRoom> rooms = new ArrayList<MeetingRoom>();
                     try {
                         rooms = DB.getMeetingRooms(size);
@@ -113,7 +116,7 @@ public class commandLineInterface {
                     System.out.println("No availeble rooms of this size");
                 }
                 for (MeetingRoom m : rooms) {
-                    System.out.println(m.toString());
+                        System.out.println(m.toString());
                 }
 
             }
