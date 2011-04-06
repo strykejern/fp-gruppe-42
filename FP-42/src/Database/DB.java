@@ -356,6 +356,23 @@ public class DB {
      * @param int number
      * @return ArrayList
      */
+
+    public static ArrayList<Integer> getMeetingRoomID () throws SQLException{
+        String query = "SELECT M_ID FROM appointment";
+        Statement stat = dbConnection.createStatement();
+        stat.executeQuery(query);
+
+        ResultSet result = stat.getResultSet();
+
+        ArrayList<Integer> isMeeting = new ArrayList<Integer>();
+        while(result.next()) {
+            int isMeet = result.getInt("M_ID");
+            isMeeting.add(isMeet);
+        }
+        
+        return isMeeting;
+    }
+
     public static ArrayList<MeetingRoom> getMeetingRooms (int number)
              throws SQLException {
        String query = "SELECT * FROM meeting_room WHERE size >= "+ number +
