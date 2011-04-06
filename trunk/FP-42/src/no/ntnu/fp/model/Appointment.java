@@ -227,6 +227,7 @@ public class Appointment {
      *
      * @return String String med informasjon om avtalen
      */
+    @Override
     public String toString () {
         String room;
 
@@ -236,6 +237,6 @@ public class Appointment {
         else{
             room = getPlace();
         }
-        return "Møte IDen er "+getId()+" og " + getTime().toString() + " i rom " + room + " og gjelder " + getDescription();
+        return "MøteID:"+getId()+" " + getTime().toString() + " i/på \"" + room + "\" og gjelder \"" + getDescription() + "\"";
     }
 }
