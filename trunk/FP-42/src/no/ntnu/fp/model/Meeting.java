@@ -16,10 +16,10 @@ import java.util.ArrayList;
  */
 public class Meeting extends Appointment{
 
-    private ArrayList<Person> participants;
+    private ArrayList<Person> notAnswered;
     private Person user;
     private ArrayList<Person> accepted;
-    private ArrayList<Person> denied;
+    private ArrayList<Person> declined;
 
     /*
      * Konstruktør som tar inn id, person, tid, beskrivelse og sted.
@@ -36,9 +36,9 @@ public class Meeting extends Appointment{
         throws SQLException {
         super(id, person, time, description, place);
         this.user = person;
-        this.participants = DB.getParticipants(this, status.ALL);
+        this.notAnswered = DB.getParticipants(this, status.NOT_ANSWERED);
         this.accepted = DB.getParticipants(this, status.PARTICIPATING);
-        this.denied = DB.getParticipants(this, status.NOT_PARTICIPATING);
+        this.declined = DB.getParticipants(this, status.NOT_PARTICIPATING);
     }
 
     /*
@@ -56,9 +56,9 @@ public class Meeting extends Appointment{
         throws SQLException {
         super(id, person, time, description, meetingRoom);
         this.user = person;
-        this.participants = DB.getParticipants(this, status.ALL);
+        this.notAnswered = DB.getParticipants(this, status.NOT_ANSWERED);
         this.accepted = DB.getParticipants(this, status.PARTICIPATING);
-        this.denied = DB.getParticipants(this, status.NOT_PARTICIPATING);
+        this.declined = DB.getParticipants(this, status.NOT_PARTICIPATING);
     }
 
      /*
@@ -75,9 +75,9 @@ public class Meeting extends Appointment{
         throws SQLException {
         super(person, time, description, meetingRoom);
         this.user = person;
-        this.participants = DB.getParticipants(this, status.ALL);
+        this.notAnswered = DB.getParticipants(this, status.NOT_ANSWERED);
         this.accepted = DB.getParticipants(this, status.PARTICIPATING);
-        this.denied = DB.getParticipants(this, status.NOT_PARTICIPATING);
+        this.declined = DB.getParticipants(this, status.NOT_PARTICIPATING);
     }
 
      /*
@@ -94,9 +94,9 @@ public class Meeting extends Appointment{
         throws SQLException {
         super(person, time, description, place);
         this.user = person;
-        this.participants = DB.getParticipants(this, status.ALL);
+        this.notAnswered = DB.getParticipants(this, status.NOT_ANSWERED);
         this.accepted = DB.getParticipants(this, status.PARTICIPATING);
-        this.denied = DB.getParticipants(this, status.NOT_PARTICIPATING);
+        this.declined = DB.getParticipants(this, status.NOT_PARTICIPATING);
     }
     /*
      * Denne skal sende beskjed ved å lagre, den beskjeden den tar inn,
@@ -129,7 +129,7 @@ public class Meeting extends Appointment{
      * @return void
      */
     public void sendInvitation(Invitation invitation) {
-        for(Person person : participants) {
+        for(Person person : getParticipants()) {
             try{
                 DB.addInvitation(invitation, person, this.user);
             }
@@ -149,8 +149,17 @@ public class Meeting extends Appointment{
      */
 
     public void addParticipant(Person person) {
-        this.participants.add(person);
+        this.notAnswered.add(person);
     }
+
+    public ArrayList<Person> getParticipants() {
+        ArrayList<Person> a = new ArrayList<Person>();
+        a.addAll(notAnswered);
+        a.addAll(accepted);
+        a.addAll(declined);
+        return a;
+    }
+
     /*
      * Fjerne deltaker fra tabellen
      *
@@ -159,7 +168,7 @@ public class Meeting extends Appointment{
      * @return void
      */
     public void removeParticipant(Person person) {
-        this.participants.remove(person);
+        this.getParticipants().remove(person);
     }
 
 }
