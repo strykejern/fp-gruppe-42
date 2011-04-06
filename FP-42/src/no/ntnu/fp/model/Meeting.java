@@ -107,7 +107,7 @@ public class Meeting extends Appointment{
      * @return void
      */
     public void sendMessage(Message message) {
-        for(Person person : participants) {
+        for(Person person : getParticipants()) {
             try{
                 DB.addMessage(message, person, user);
             }
