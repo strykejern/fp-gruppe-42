@@ -22,26 +22,21 @@ import java.sql.Timestamp;
 
 public class Calendar {
 
-    private Person bruker;
-    private ArrayList<Meeting> meetings;
-    private ArrayList<Appointment> appointments;
+    private Person                  user;
+    private ArrayList<Meeting>      meetings;
+    private ArrayList<Appointment>  appointments;
+    private ArrayList<Message>      messages;
 
-    public Calendar (Person bruker)
-        throws SQLException {
-        this.bruker = bruker;
-        this.meetings = DB.getMeetings(bruker);
-        this.appointments = DB.getAppointments(bruker);
+    public Calendar (Person bruker) throws SQLException {
+        this.user           = bruker;
+        this.meetings       = DB.getMeetings(bruker);
+        this.appointments   = DB.getAppointments(bruker);
+        this.messages       = DB.getMessages(user.getName());
 
     }
 
-    public boolean logOn(String brukernavn, String passord)
-        throws SQLException {
-        Person bruker = DB.getPerson(brukernavn);
-        if (bruker.getPassword() == passord) {
-            Calendar c = new Calendar(bruker);
-            return true;
-        }
-        return false;
+    public boolean addAppointment(Appointment app){
+        DB.addAppointment(app, meeting);
     }
 
     public void newAppointment() {
@@ -49,7 +44,7 @@ public class Calendar {
         Timestamp slutt = Timestamp.valueOf("2011-05-04 16:00:00");
 
         int id = meetings.size()+1; //denne må vel hentes ut av databasen etter at den er lagret der?
-        Person creator = bruker;
+        Person creator = user;
         Timespan time = new Timespan(start,slutt);
         String description = /*String fra GUI, beskrivelse av møte/avtale*/"";
         String place = "";
@@ -79,7 +74,7 @@ public class Calendar {
 
 
         int id = meetings.size()+1; //denne må vel hentes ut av databasen etter at den er lagret der?
-        Person creator = bruker;
+        Person creator = user;
         Timespan time = new Timespan(start,slutt);
         String description = /*String fra GUI, beskrivelse av møte/avtale*/"";
         String place = "";
