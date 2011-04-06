@@ -21,6 +21,17 @@ public class Meeting extends Appointment{
     private ArrayList<Person> accepted;
     private ArrayList<Person> denied;
 
+    /*
+     * Konstruktør som tar inn id, person, tid, beskrivelse og sted.
+     *
+     * @param id id'en til møtet
+     * @param person Personen som opprettet møtet
+     * @param time Når møtet skal være
+     * @param description Beskrivelse av møtet
+     * @param place Hvor møtet skal være
+     *
+     * @return Meeting Møtet som blir opprettet
+     */
     public Meeting (int id, Person person, Timespan time, String description, String place)
         throws SQLException {
         super(id, person, time, description, place);
@@ -29,7 +40,18 @@ public class Meeting extends Appointment{
         this.accepted = DB.getParticipants(this, status.PARTICIPATING);
         this.denied = DB.getParticipants(this, status.NOT_PARTICIPATING);
     }
-    
+
+    /*
+     * Konstruktør som tar inn id, person, tid, beskrivelse og møterom.
+     *
+     * @param id id'en til møtet
+     * @param person Personen som opprettet møtet
+     * @param time Når møtet skal være
+     * @param description Beskrivelse av møtet
+     * @param meetingRoom Hvor møtet skal være
+     *
+     * @return Meeting Møtet som blir opprettet
+     */
     public Meeting (int id, Person person, Timespan time,String description, MeetingRoom meetingRoom)
         throws SQLException {
         super(id, person, time, description, meetingRoom);
@@ -39,6 +61,16 @@ public class Meeting extends Appointment{
         this.denied = DB.getParticipants(this, status.NOT_PARTICIPATING);
     }
 
+     /*
+     * Konstruktør som tar inn person, tid, beskrivelse og møterom.
+     *
+     * @param person Personen som opprettet møtet
+     * @param time Når møtet skal være
+     * @param description Beskrivelse av møtet
+     * @param meetingRoom Hvor møtet skal være
+     *
+     * @return Meeting Møtet som blir opprettet
+     */
     public Meeting (Person person, Timespan time, String description, MeetingRoom meetingRoom)
         throws SQLException {
         super(person, time, description, meetingRoom);
@@ -48,6 +80,16 @@ public class Meeting extends Appointment{
         this.denied = DB.getParticipants(this, status.NOT_PARTICIPATING);
     }
 
+     /*
+     * Konstruktør som tar inn person, tid, beskrivelse og sted.
+     *
+     * @param person Personen som opprettet møtet
+     * @param time Når møtet skal være
+     * @param description Beskrivelse av møtet
+     * @param meetingRoom Hvor møtet skal være
+     *
+     * @return Meeting Møtet som blir opprettet
+     */
     public Meeting (Person person, Timespan time, String description, String place)
         throws SQLException {
         super(person, time, description, place);
