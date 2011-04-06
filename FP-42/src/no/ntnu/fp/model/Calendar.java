@@ -35,8 +35,14 @@ public class Calendar {
 
     }
 
-    public boolean addAppointment(Appointment app){
-        DB.addAppointment(app, meeting);
+    public boolean addAppointment(Appointment app, boolean meeting){
+        try {
+            DB.addAppointment(app, meeting);
+        } catch (SQLException ex) {
+            return false;
+        }
+        appointments.add(app);
+        return true;
     }
 
     public void newAppointment() {
