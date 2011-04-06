@@ -39,7 +39,7 @@ public class Timespan {
 
     @Override
     public String toString() {
-        String tid = "starter klokken " + start.toString() + " og slutter klokken " + end.toString();
+        String tid = "Fra: " + start.toString() + " Til: " + end.toString();
         return tid;
     }
 
