@@ -226,10 +226,16 @@ public class DB {
      */
     public static ArrayList<Appointment> getAppointments(Person person)
                 throws SQLException {
-        String query = "SELECT * FROM appointment, participant WHERE "
-                + "appointment.creator = '" + person.getUsername() +
-                "' OR (appointment.A_ID = participant.A_ID AND participant.username= '"
-                + person.getUsername() + "') ORDER BY start_time";
+        /*SELECT DISTINCT appointment.A_ID, creator, start_time, end_time, description, place
+        FROM appointment, participant
+        WHERE creator =  "ove" OR ( username =  "ove" AND appointment.A_ID = participant.A_ID )*/
+
+        String query =    "SELECT DISTINCT appointment.A_ID, creator, start_time, end_time, description, place "
+                        + "FROM appointment, participant "
+                        + "WHERE creator='" + person.getUsername() + "' "
+                        + "OR (username= '" + person.getUsername() + "' "
+                        + "AND appointment.A_ID = participant.A_ID) "
+                        + "ORDER BY start_time";
         System.out.println(query);
 
         Statement stat = dbConnection.createStatement();
