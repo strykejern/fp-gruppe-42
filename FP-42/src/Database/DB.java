@@ -450,7 +450,7 @@ public class DB {
      * @param status st
      */
     public static void changeStatus(Person person, Meeting meeting, status st)
-        throws SQLException{
+            throws SQLException{
         String query = "UPDATE participant WHERE username = '" + person.getUsername()
                 + "' AND M_ID=" + meeting.getId()
                 + "(status) VALUES ('"
@@ -501,20 +501,22 @@ public class DB {
      * @param int id
      * @return Message
      */
-    public static Message getMessage(int id)
+    public static ArrayList<Message> getMessages(String username)
                 throws SQLException{
 
-        String query = "SELECT * FROM message WHERE M_ID= "+id+"";
+        String query = "SELECT * FROM message WHERE to= "+username+"";
 
         Statement stat = dbConnection.createStatement();
         stat.executeQuery(query);
 
         ResultSet result = stat.getResultSet();
 
+        ArrayList<Message> m = new ArrayList<Message>();
+
         if(result!=null){
             String subject = result.getString("subject");
             String content = result.getString("text");
-            Message m = new Message(subject, content);
+            m.add(new Message(subject, content));
 
             result.close();
             stat.close();
