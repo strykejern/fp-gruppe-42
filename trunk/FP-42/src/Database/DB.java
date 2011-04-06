@@ -46,6 +46,16 @@ public class DB {
                 databaseLocation, userName, password);
     }
 
+    /*
+     * Metode som tar inn brukernvan og passord, og sjekker opp mot databasen.
+     * Hvis den finner brukernavnet og passordet stemmer, blir det vellykket pålogging,
+     * hvis ikke får man ikke logget på systemet.
+     * @Param username
+     *  brukernavn som men prøver å logge på, string, kan ikke være null
+     * @Param password
+     *  passord tilhørende brukernavnet, string, kan ikke være null.
+     * @return true/false
+     */
     public static boolean login(String username, String password){
         final String query = "SELECT password FROM user WHERE username = '"+username+"'";
         try{
@@ -64,6 +74,10 @@ public class DB {
         return false;
     }
 
+    /*
+     * Metode som henter ut en en arraylist med alle personer i databasen.
+     * @return ArrayList
+     */
 
     public static ArrayList<Person> getPersons() throws SQLException{
         final String query = "SELECT * FROM user ORDER BY username ASC";
@@ -88,6 +102,11 @@ public class DB {
         return p;
     }
 
+    /*
+     * Metode som henter ut navn og e-post, basert på brukernavn.
+     * @param username
+     * @return Person
+     */
     public static Person getPerson(String username) throws SQLException{
         final String query = "SELECT * FROM user WHERE username = '"+username+"'";
 
@@ -108,6 +127,10 @@ public class DB {
         } else throw new SQLException();
     }
 
+    /*
+     * Metode som legger til en person i databasen.
+     * @param Person user
+     */
     public static void addPerson(Person user)
             throws SQLException {
 
@@ -124,6 +147,10 @@ public class DB {
         stat.executeUpdate(query);
     }
 
+    /*
+     * Metode som fjerner en person fra databasen.
+     * @param Person user
+     */
     public static void removePerson(Person user)
             throws SQLException {
 
@@ -136,6 +163,12 @@ public class DB {
 
     }
 
+    /*
+     * Metode som legger til en avatale eller møte i databasen.
+     * Int meeting bestemmer om det er en avtale eller et møte.
+     * @param Appointment appointment
+     * @param int meeting
+     */
     public static void addAppointment(Appointment appointment, int meeting)
             throws SQLException {
 
@@ -186,6 +219,11 @@ public class DB {
         return a;
     }*/
 
+    /*
+     * Metode som henter ut alle avtalene i kalenderen til en gitt person.
+     * @param Person person
+     * @return ArrayList
+     */
     public static ArrayList<Appointment> getAppointments(Person person)
                 throws SQLException {
         String query = "SELECT * FROM appointment, participant WHERE "
@@ -219,6 +257,11 @@ public class DB {
         return a;
     }
 
+    /*
+     * Metode som endrer en metode. Metoden som tas inn har oppdatert informasjon
+     * som blir endret i databasen.
+     * @param Appointment appointment
+     */
     public static void editAppointment(Appointment appointment)
         throws SQLException{
 
@@ -235,6 +278,10 @@ public class DB {
     }
 
 
+    /*
+     * Metode som fjerner en metode fra databasen.
+     * @param int id
+     */
     public static void removeAppointment(int id)
             throws SQLException {
         String query = "DELETE FROM appointment WHERE A_ID=" +
@@ -244,6 +291,11 @@ public class DB {
         stat.executeUpdate(query);
     }
 
+    /*
+     * Metode som henter ut alle møter i kalenderen til en person.
+     * @param Person person
+     * @return ArrayList
+     */
         public static ArrayList<Meeting> getMeetings(Person person)
                 throws SQLException {
         String query = "SELECT * FROM appointment, participant WHERE "
@@ -274,6 +326,10 @@ public class DB {
         return m;
     }
 
+    /*
+     * Metode som legger et møterom til i databasen.
+     * @param MeetingRoom room
+     */
     public static void addMeetingRoom(MeetingRoom room)
             throws SQLException {
 
@@ -287,6 +343,11 @@ public class DB {
         stat.executeUpdate(query);
     }
 
+    /*
+     * Metode som henter ut alle møterom over en gitt minimumskapasitet.
+     * @param int number
+     * @return ArrayList
+     */
     public static ArrayList<MeetingRoom> getMeetingRooms (int number)
              throws SQLException {
        String query = "SELECT * FROM meeting_room WHERE size >= "+ number +
@@ -309,6 +370,11 @@ public class DB {
     }
 
 
+    /*
+     * Metode som henter ut et spesifikt møterom fra databasen.
+     * @param int id
+     * @return MeetingRoom
+     */
         public static MeetingRoom getMeetingRoom (int id)
              throws SQLException {
        String query = "SELECT * FROM meeting_room WHERE M_ID = " +id;
@@ -321,6 +387,10 @@ public class DB {
 
     }
 
+    /*
+     * Metode som sletter et møterom fra databasen.
+     * @param int id
+     */
     public static void removeMeetingRoom (int id)
               throws SQLException {
        String query = "DELETE FROM meeting_room WHERE M_ID = " + id;
@@ -329,7 +399,12 @@ public class DB {
 
 
     }
-    
+
+    /*
+     * Metode som legger til en deltaker til et møte.
+     * @param String username
+     * @param int m_id
+     */
     public static void addParticipant (String username, int m_id)
                throws SQLException {
          String query = "INSERT INTO participant "
@@ -342,7 +417,13 @@ public class DB {
 
         stat.executeUpdate(query);
     }
-    
+
+    /*
+     * Metode som henter ut alle deltakere på et møte.
+     * @param Meeting meeting
+     * @param status st
+     * @return ArrayList
+     */
     public static ArrayList<Person> getParticipants(Meeting meeting, status st)
             throws SQLException {
        String query = "SELECT * FROM participant WHERE A_ID = " +
@@ -362,6 +443,12 @@ public class DB {
        return p;
     } 
 
+    /*
+     * Metode som endrer statusen for en persons deltakelse på et møte.
+     * @param Person person
+     * @param Meeting meeting
+     * @param status st
+     */
     public static void changeStatus(Person person, Meeting meeting, status st)
         throws SQLException{
         String query = "UPDATE participant WHERE username = '" + person.getUsername()
@@ -375,7 +462,10 @@ public class DB {
 
     }
     
-        
+    /*
+     * Metode som fjerner en deltaker fra listen over møtedeltakere.
+     * @param Person person
+     */
     public static void removeParticipant(Person person)
                throws SQLException {
         String query = "DELETE FROM participant WHERE username = '"+person.getUsername() + "'";
@@ -385,6 +475,12 @@ public class DB {
         
     }
 
+    /*
+     * Metode som oppretter en melding i databasen, med en avsender og mottaker.
+     * @param Message message
+     * @param Person to
+     * @param Person from
+     */
     public static void addMessage(Message message, Person to, Person from)
                 throws SQLException {
         String query = "INSERT INTO message"
@@ -400,6 +496,11 @@ public class DB {
 
     }
 
+    /*
+     * metode som henter ut en melding fra databasen.
+     * @param int id
+     * @return Message
+     */
     public static Message getMessage(int id)
                 throws SQLException{
 
@@ -422,6 +523,10 @@ public class DB {
          } else throw new SQLException();
     }
 
+    /*
+     * Metode som fjerner en melding fra databasen.
+     * @param int id
+     */
     public static void removemessage(int id)
                 throws SQLException{
         String query = "DELETE FROM message WHERE M_ID= "+id;
@@ -430,6 +535,12 @@ public class DB {
         stat.executeUpdate(query);
     }
 
+    /*
+     * Metode som oppretter en møteinnkallelse i databasen.
+     * @param Invitation invitation
+     * @param Person to
+     * @param Person from
+     */
      public static void addInvitation(Invitation invitation, Person to, Person from)
                 throws SQLException {
                 String text = "";
