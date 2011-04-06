@@ -180,11 +180,21 @@ public class commandLineInterface {
 
             }
             else if(command.equals("viewcalendar")){
+                String user = arguments.next();
+
                 System.out.println("");
                 System.out.println("Your appointments:");
                 try {
-                    for (Appointment app : DB.getAppointments(me)) {
-                        System.out.println(app.toString());
+                    if(user.equals("me")){
+                        for (Appointment app : DB.getAppointments(me)) {
+                            System.out.println(app.toString());
+                        }
+                    }
+                    else {
+                        for (Appointment app : DB.getAppointments(DB.getPerson(user))){
+                            System.out.println(app.toString());
+                        }
+
                     }
                 } catch (SQLException ex) {
                     System.out.println("FAIL: " + ex.getMessage());
@@ -216,7 +226,7 @@ public class commandLineInterface {
         System.out.println("** addparticipant ** -- meetingID personID[,personID,,,]");
         System.out.println("** addmeetingroom ** -- size and name");
         System.out.println("** answerinvitation ** -- id yes/no");
-        System.out.println("** viewcalendar ** -- views users calendar");
+        System.out.println("** viewcalendar ** -- me/username views your/users calendar");
         System.out.println("** close ** --  stops the program");
         System.out.println("** help ** -- views the help menu");
         System.out.println("");
