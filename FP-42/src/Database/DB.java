@@ -169,13 +169,13 @@ public class DB {
      * @param Appointment appointment
      * @param int meeting
      */
-    public static void addAppointment(Appointment appointment, int meeting)
+    public static void addAppointment(Appointment appointment, boolean meeting)
             throws SQLException {
 
 
         String query = "INSERT INTO appointment "
                 + "(meeting, creator, start_time, end_time, description, place, M_ID) VALUES ("+
-                meeting + ",'" +
+                (meeting ? "1" : "0") + ",'" +
                 appointment.getCreator().getUsername() + "', '" +
                 appointment.getTime().getStart() + "', '" +
                 appointment.getTime().getEnd() + "', '" +
@@ -230,6 +230,8 @@ public class DB {
                 + "appointment.creator = '" + person.getUsername() +
                 "' OR (appointment.A_ID = participant.A_ID AND participant.username= '"
                 + person.getUsername() + "') ORDER BY start_time";
+        System.out.println(query);
+
         Statement stat = dbConnection.createStatement();
 
         stat.executeQuery(query);
