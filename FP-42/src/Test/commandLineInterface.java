@@ -82,7 +82,12 @@ public class commandLineInterface {
                     MeetingRoom room;
 
                     try {
-                        room = DB.getMeetingRoom(Integer.parseInt(place.substring(1)));
+                        ArrayList<MeetingRoom> m = DB.getMeetingRooms(Integer.parseInt(place.substring(1)), start, end);
+                        for (MeetingRoom mroom : m) {
+                            System.out.println(mroom.toString());
+                        }
+
+                        room = m.get(Integer.parseInt(input.next())-1);
 
                     } catch (SQLException ex) {
                         System.out.println("FAIL: " + ex.getMessage());
@@ -105,10 +110,12 @@ public class commandLineInterface {
 
                 System.out.println("");
                 int size = Integer.parseInt(arguments.next());
+                Timestamp start = Timestamp.valueOf(arguments.next() + " " + arguments.next());
+                Timestamp end = Timestamp.valueOf(arguments.next() + " " + arguments.next());
 
                 ArrayList<MeetingRoom> rooms = new ArrayList<MeetingRoom>();
                     try {
-                        rooms = DB.getMeetingRooms(size);
+                        rooms = DB.getMeetingRooms(size, start, end);
                     } catch (SQLException ex) {
 
                     }
@@ -134,7 +141,12 @@ public class commandLineInterface {
                 if (place.startsWith("#")){
                     MeetingRoom room;
                     try {
-                        room = DB.getMeetingRoom(Integer.parseInt(place.substring(1)));
+                        ArrayList<MeetingRoom> m = DB.getMeetingRooms(Integer.parseInt(place.substring(1)), start, end);
+                        for (MeetingRoom mroom : m) {
+                            System.out.println(mroom.toString());
+                        }
+
+                        room = m.get(Integer.parseInt(input.next())-1);
                     } catch (SQLException ex) {
                         System.out.println("FAIL: " + ex.getMessage());
                         return;
@@ -222,14 +234,14 @@ public class commandLineInterface {
         System.out.println("");
         System.out.println("Commands");
         System.out.println("*****************************************************************************************************************************************************");
-        System.out.println("** addappointment ** -- type(\"meeting\"/\"appointment\") start end place/#meetingRoom description. Want to book room? Type first showmeetingrooms");
+        System.out.println("** addappointment ** -- type(\"meeting\"/\"appointment\") start end place/#meetingRoomSize description. Want to book room? Type first showmeetingrooms");
         System.out.println("** showmeetingrooms ** -- size");
         System.out.println("** editappointment ** -- id start end place/#meetingRoom description");
         System.out.println("** deleteappointment ** -- id");
         System.out.println("** addparticipant ** -- meetingID personID[,personID,,,]");
         System.out.println("** addmeetingroom ** -- size and name");
         System.out.println("** answerinvitation ** -- id yes/no");
-        System.out.println("** viewcalendar ** -- me/username views your/users calendar");
+        System.out.println("** viewcalendar ** -- me/username views your/user's calendar");
         System.out.println("** close ** --  stops the program");
         System.out.println("** help ** -- views the help menu");
         System.out.println("");

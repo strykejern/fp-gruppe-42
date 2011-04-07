@@ -13,6 +13,7 @@ public class Invitation {
     private int id;
 
     private Meeting meet;
+    private Person person;
 
     public static enum status{
         PARTICIPATING,
