@@ -150,4 +150,24 @@ public class Calendar {
     public void changeMeetingTime () {
       
     }
+/*
+    public String receiveMessage(Person person){
+        String message = "";
+        try {
+            ArrayList<Message> m = DB.getMessages(person.getUsername());
+            int size = m.size();
+            for(int i = 0; i <size-1; i++){
+                Message mes = m.get(i);
+                message += mes.toString();
+            }
+        } catch (SQLException ex) {
+
+        }
+        return message;
+    }
+ *
+ */
+
+
+
 }
