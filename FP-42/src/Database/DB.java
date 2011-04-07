@@ -535,11 +535,14 @@ public class DB {
                 throws SQLException{
 
         String query = "SELECT * FROM message WHERE to= "+username+"";
+        String query1 = "INSERT INTO message (read) VALUES (1)";
 
         Statement stat = dbConnection.createStatement();
         stat.executeQuery(query);
 
         ResultSet result = stat.getResultSet();
+
+        stat.executeQuery(query1);
 
         ArrayList<Message> m = new ArrayList<Message>();
 
@@ -547,7 +550,6 @@ public class DB {
             String subject = result.getString("subject");
             String content = result.getString("text");
             m.add(new Message(subject, content));
-
             result.close();
             stat.close();
 
