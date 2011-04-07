@@ -102,6 +102,10 @@ public class Appointment {
      *
      * @return int Id'en til avtalen
      */
+    /*
+     * henter ut avtaleid
+     * @return avtaleid
+     */
     public int getId() {
         return id;
     }
