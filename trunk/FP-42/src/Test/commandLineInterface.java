@@ -135,29 +135,42 @@ public class commandLineInterface {
                 Timespan span = new Timespan(start, end);
 
                 String place = arguments.next();
-                String description = arguments.nextLine();
 
-                Appointment app;
                 if (place.startsWith("#")){
                     MeetingRoom room;
                     try {
+                        Appointment app = DB.getAppointment(appID, username);
                         ArrayList<MeetingRoom> m = DB.getMeetingRooms(Integer.parseInt(place.substring(1)), start, end);
                         for (MeetingRoom mroom : m) {
                             System.out.println(mroom.toString());
                         }
-
                         room = m.get(Integer.parseInt(input.next())-1);
+                        app.setTime(span);
+                        app.setMeetingRoom(room);
                     } catch (SQLException ex) {
                         System.out.println("FAIL: " + ex.getMessage());
                         return;
                     }
-                    app = new Appointment(appID, me, span, description, room);
                 }
                 else{
-                    app = new Appointment(appID, me, span, description, place);
+                    try {
+                    Appointment app = DB.getAppointment(appID, username);
+                    app.setTime(span);
+                    app.setPlace(place);
+
+                    }
+                    catch (SQLException ex) {
+                        System.out.println("FAIL: " + ex.getMessage());
+                        return;
+                    }
                 }
                 try {
                     DB.editAppointment(app);
+                    ArrayList<Person> p = DB.getParticipants(appID, DB.status.ALL);
+                    for (Person person : p) {
+                        DB.changeStatus(person, appID, DB.status.NOT_ANSWERED);
+                    }
+
                 } catch (SQLException ex) {
                     System.out.println("FAIL: " + ex.getMessage());
                 }
