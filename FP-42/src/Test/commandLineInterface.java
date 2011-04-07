@@ -249,8 +249,16 @@ public class commandLineInterface {
                 for (Meeting m : meeting) {
                         System.out.println(m.toString());
                 }
-                System.out.println("Hvilket møte vil du sjekke møteinnkallingen?");
-                
+                System.out.println("Hvilket møte vil du sjekke møteinnkallingen for?");
+
+                String id = input.nextLine();
+
+                try{
+                    System.out.println(DB.traceMeeting(id));
+                }catch (SQLException ex) {
+
+                }
+
             }
             else{
                 System.out.println("Invalid command");
