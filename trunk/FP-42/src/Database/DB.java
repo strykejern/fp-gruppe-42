@@ -23,15 +23,15 @@ import no.ntnu.fp.model.Timespan;
 public class DB {
 
     private static Connection dbConnection;
-    
+
     public enum status{
         ALL,
         PARTICIPATING,
         NOT_PARTICIPATING,
         NOT_ANSWERED
-        
+
     }
-    
+
     public static void initializeDB
                 (String userName, String password, String databaseLocation)
             throws ClassNotFoundException, InstantiationException,
@@ -66,7 +66,7 @@ public class DB {
             ResultSet result = stat.getResultSet();
 
             if (!result.next()) return false;
-        
+
             if (result.getString("password").equals(password)) return true;
         } catch (SQLException e){
 
@@ -252,7 +252,7 @@ public class DB {
             Timespan time           = new Timespan(result.getTimestamp("start_time"), result.getTimestamp("end_time"));
             String description      = result.getString("description");
             String place            = result.getString("place");
-            
+
 
             if (place != null) {
                 a.add(new Appointment(id, creator, time, description, place));
@@ -368,18 +368,15 @@ public class DB {
             int isMeet = result.getInt("M_ID");
             isMeeting.add(isMeet);
         }
-        
+
         return isMeeting;
     }
 
     public static ArrayList<MeetingRoom> getMeetingRooms (int size, Timestamp start, Timestamp end)
              throws SQLException {
-       String query = "SELECT * FROM meeting_room WHERE size = " +size+
-               " AND NOT EXISTS ( SELECT * FROM appointment WHERE "
-               + "appointment.M_ID=meeting_room.M_ID AND (start_time<"
-               + end + " AND start_time>" + start + ") OR ("
-               + start + ">start_time AND " + end + "<end_time) OR ("
-               + start + ">start_time AND "+ end + ">end_time))";
+       String query = "SELECT * FROM meeting_room, appointment WHERE size > " + size
+               + " AND meeting_room.M_ID = appointment_M_ID AND ((start_time < '" + start
+               + "' AND end_time < '" + end + "') OR start_time > '" + end + "')";
        System.out.println(query);
        Statement stat = dbConnection.createStatement();
        stat.executeQuery(query);
@@ -393,9 +390,7 @@ public class DB {
 
             r.add(new MeetingRoom(id,name,size));
        }
-
        return r;
-
     }
 
 
@@ -467,10 +462,10 @@ public class DB {
        while (result.next()){
             String username  = result.getString("username");
 
-            p.add(getPerson(username)); 
+            p.add(getPerson(username));
        }
        return p;
-    } 
+    }
 
     /*
      * Metode som endrer statusen for en persons deltakelse på et møte.
@@ -490,7 +485,7 @@ public class DB {
         stat.executeUpdate(query);
 
     }
-    
+
     /*
      * Metode som fjerner en deltaker fra listen over møtedeltakere.
      * @param Person person
@@ -501,7 +496,7 @@ public class DB {
 
         Statement stat = dbConnection.createStatement();
         stat.executeUpdate(query);
-        
+
     }
 
     /*
@@ -669,10 +664,5 @@ public class DB {
 
         Statement stat = dbConnection.createStatement();
         stat.executeUpdate(query);
-
-
     }
-
 }
-
-
