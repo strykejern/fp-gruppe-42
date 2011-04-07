@@ -373,10 +373,15 @@ public class DB {
         return isMeeting;
     }
 
-    public static ArrayList<MeetingRoom> getMeetingRooms (int number)
+    public static ArrayList<MeetingRoom> getMeetingRooms (int size, Timestamp start, Timestamp end)
              throws SQLException {
-       String query = "SELECT * FROM meeting_room WHERE size >= "+ number +
-               " ORDER BY size ASC";
+       String query = "SELECT * FROM meeting_room WHERE size = " +size+
+               " AND NOT EXISTS ( SELECT * FROM appointment WHERE "
+               + "appointment.M_ID=meeting_room.M_ID AND (start_time<"
+               + end + " AND start_time>" + start + ") OR ("
+               + start + ">start_time AND " + end + "<end_time) OR ("
+               + start + ">start_time AND "+ end + ">end_time))";
+       System.out.println(query);
        Statement stat = dbConnection.createStatement();
        stat.executeQuery(query);
 
@@ -384,7 +389,7 @@ public class DB {
        ArrayList<MeetingRoom> r = new ArrayList<MeetingRoom>();
        while (result.next()){
             String name  = result.getString("name");
-            int size  = result.getInt("size");
+            size  = result.getInt("size");
             int id = result.getInt("M_ID");
 
             r.add(new MeetingRoom(id,name,size));
@@ -402,13 +407,13 @@ public class DB {
      */
         public static MeetingRoom getMeetingRoom (int id)
              throws SQLException {
-       String query = "SELECT * FROM meeting_room WHERE M_ID = " +id;
+       String query = "SELECT * FROM meeting_room WHERE M_ID" + id;
        Statement stat = dbConnection.createStatement();
        stat.executeQuery(query);
 
        ResultSet result = stat.getResultSet();
        if (!result.next()) throw new SQLException("No MeetingRoom");
-       return new MeetingRoom(id, result.getString("name"), result.getInt("size"));
+       return new MeetingRoom(result.getInt("M_ID"), result.getString("name"), result.getInt("size"));
 
     }
 
