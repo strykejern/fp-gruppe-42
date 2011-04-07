@@ -100,7 +100,7 @@ public class Calendar {
 
 
 
-    public void editAppointment(Appointment appointment, Timestamp start, Timestamp end, String description, String place, ) {
+    public void editAppointment(Appointment appointment, Timestamp start, Timestamp end, String description, String place) {
         Timespan time = new Timespan(start, end);
         appointment.setTime(time);
         appointment.setDescription(description);
