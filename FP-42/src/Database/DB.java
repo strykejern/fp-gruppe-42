@@ -569,6 +569,7 @@ public class DB {
     }
 
 
+    /*
     public static ArrayList getMeetings(String username)
                 throws SQLException{
         String query = "SELECT * FROM appointment WHERE creator= "+username+" AND meeting=1";
@@ -602,6 +603,49 @@ public class DB {
         return m;
     }
 
+     *
+     */
+
+    public static String traceMeeting(String id)
+            throws SQLException{
+        String query = "SELECT * FROM participant WHERE A_ID= "+id;
+
+        Statement stat = dbConnection.createStatement();
+        stat.executeQuery(query);
+
+        ResultSet result = stat.getResultSet();
+
+
+        ArrayList<String> s = new ArrayList<String>();
+        int na =0;
+        int np=0;
+
+        while(result.next()){
+            String status = result.getString("status");
+            if (status.equals("NOT_ANSWERED")){
+                if (na == 0){
+                    s.add("En eller flere møtedeltakere har ikke svart på innkallingen.");
+                    na++;
+                }
+            }else if(status.equals("NOT_PARTCIPATING")){
+                if(np==0){
+                    s.add("En eller flere møtedeltakere deltar ikke på møtet.");
+                }
+            }
+
+
+
+
+        }
+        if (na==0 && np==0){
+            s.add("Alle møtedeltakere deltar på møtet.");
+        }
+        String st ="";
+        for(int i=0; i<s.size(); i++){
+            st += s.get(i);
+        }
+        return st;
+    }
 
     /*
      * Metode som oppretter en møteinnkallelse i databasen.
