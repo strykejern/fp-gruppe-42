@@ -14,6 +14,15 @@ public class Message {
     private int id;
     private String subject;
     private String content;
+    private String from;
+
+    public String getFrom() {
+        return from;
+    }
+
+    public void setFrom(String from) {
+        this.from = from;
+    }
 
     public Message(String subject, String content) {
         this.subject = subject;
@@ -51,7 +60,7 @@ public class Message {
     }
 
     public String toString() {
-        return "Emne:" + getSubject() + " Melding: " +getContent();
+        return "Fra: " + getFrom() + "\nEmne: " + getSubject() + "\nMelding: " +getContent();
     }
 
 
