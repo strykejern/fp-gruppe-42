@@ -10,9 +10,8 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Scanner;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import no.ntnu.fp.model.Appointment;
+import no.ntnu.fp.model.Meeting;
 import no.ntnu.fp.model.MeetingRoom;
 import no.ntnu.fp.model.Person;
 import no.ntnu.fp.model.Timespan;
@@ -235,7 +234,24 @@ public class commandLineInterface {
             else if(command.equals("close")) {
                 break;
             }
+            else if(command.equals("tracemeetings")){
+                System.out.println("");
 
+                ArrayList<Meeting> meeting = new ArrayList<Meeting>();
+                    try {
+                        meeting = DB.getMeetings(me);
+                    } catch (SQLException ex) {
+
+                    }
+                if(meeting.isEmpty()) {
+                    System.out.println("No meetings in your calender");
+                }
+                for (Meeting m : meeting) {
+                        System.out.println(m.toString());
+                }
+                System.out.println("Hvilket møte vil du sjekke møteinnkallingen?");
+                
+            }
             else{
                 System.out.println("Invalid command");
             }
