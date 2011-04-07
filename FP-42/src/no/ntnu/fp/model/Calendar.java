@@ -115,7 +115,7 @@ public class Calendar {
 
     public void deleteAppointment(Appointment appointment) {
         try {
-            DB.removeAppointment(appointment);
+            DB.removeAppointment(appointment.getId());
         } catch (SQLException ex) {
 
         }
