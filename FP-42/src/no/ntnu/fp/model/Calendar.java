@@ -27,6 +27,10 @@ public class Calendar {
     private ArrayList<Appointment>  appointments;
     private ArrayList<Message>      messages;
 
+    /*
+     * Konstruktør som oppretter en calendar
+     * @param bruker, personen hvis kalender vi oppretter
+     */
     public Calendar (Person bruker) throws SQLException {
         this.user           = bruker;
         this.meetings       = DB.getMeetings(bruker);
@@ -35,6 +39,11 @@ public class Calendar {
 
     }
 
+    /*
+     * metode som legger til en avtale i databasen.
+     * @param app avtalen vi skal legge til
+     * @param meeting, boolean som sier om det er et møte eller bare en avtale
+     */
     public boolean addAppointment(Appointment app, boolean meeting){
         try {
             DB.addAppointment(app, meeting);
@@ -45,6 +54,9 @@ public class Calendar {
         return true;
     }
 
+    /*
+     * Metode som oppretter en avtale.
+     */
     public void newAppointment() {
         Timestamp start = Timestamp.valueOf("2011-05-04 12:15:00");
         Timestamp slutt = Timestamp.valueOf("2011-05-04 16:00:00");
@@ -70,6 +82,9 @@ public class Calendar {
     }
 
 
+    /*
+     *
+     */
     public void newMeeting() throws SQLException{
         /*
          * Bare en test så det ikke er error i filen
@@ -100,6 +115,14 @@ public class Calendar {
 
 
 
+    /*
+     * Metode som endrer på en avtale.
+     * @param appointment, avtalen vi skal endre på
+     * @param start, nytt starttidspunkt
+     * @param end, nytt sluttidspunkt
+     * @param description, beskrivelse
+     * @param place, sted
+     */
     public void editAppointment(Appointment appointment, Timestamp start, Timestamp end, String description, String place) {
         Timespan time = new Timespan(start, end);
         appointment.setTime(time);
@@ -113,6 +136,10 @@ public class Calendar {
 
     
 
+    /*
+     * Metode som sletter en avtale.
+     * @param appointment, avtalen som skal slettes
+     */
     public void deleteAppointment(Appointment appointment) {
         try {
             DB.removeAppointment(appointment.getId());
@@ -121,6 +148,10 @@ public class Calendar {
         }
     }
 
+    /*
+     * metode som henter ut kalenderdetaljer
+     * @param person, personen hvis kalender vi henter ut detaljer for
+     */
     public void getCalender(Person person) {
         try{
         DB.getAppointments(person);
@@ -135,6 +166,10 @@ public class Calendar {
 
     }
 
+    /*
+     * metode som mottar meldinger
+     * @param person, personen hvis meldinger vi skal hente ut
+     */
     public void recieveMessage(Person person) {
         try {
             ArrayList<Message> m = DB.getMessages(person.getUsername());
