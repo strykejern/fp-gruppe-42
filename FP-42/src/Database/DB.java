@@ -199,25 +199,25 @@ public class DB {
     }
 
 
-    /*public static Appointment getAppointment (int id, Person person) throws SQLException {
+        public static Appointment getAppointment (int id, String username) throws SQLException {
         String guery = "SELECT * FROM appointment WHERE"
-                + "appointment.creator = '" + person.getUsername() +
-                "')";
+                + "appointment.creator = '" + username +
+                "' AND A_ID=" + id;
         Statement stat = dbConnection.createStatement();
 
         stat.executeQuery(guery);
         ResultSet result = stat.getResultSet();
         Appointment a;
-        while(result.next()){
-            Person creator          = getPerson(result.getString("creator"));
-            Timespan time           = new Timespan(result.getTimestamp("start_time"), result.getTimestamp("end_time"));
-            String description      = result.getString("description");
-            String place            = result.getString("place");
+        if (!result.next()) throw new SQLException("No appointment");
 
-            a  = new Appointment(creator, time, description, place);
-        }
+        Person creator          = getPerson(result.getString("creator"));
+        Timespan time           = new Timespan(result.getTimestamp("start_time"), result.getTimestamp("end_time"));
+        String description      = result.getString("description");
+        String place            = result.getString("place");
+
+        a  = new Appointment(creator, time, description, place);
         return a;
-    }*/
+    }
 
     /*
      * Metode som henter ut alle avtalene i kalenderen til en gitt person.
@@ -274,9 +274,8 @@ public class DB {
         throws SQLException{
 
         String query ="UPDATE appointment" +
-                "(start_time, end_time, description, place) SET ('" + appointment.getTime().getStart() + "', '" +
+                "(start_time, end_time, place) SET ('" + appointment.getTime().getStart() + "', '" +
                 appointment.getTime().getEnd() + "', '" +
-                appointment.getDescription() + "', '" +
                 appointment.getPlace() + "',)";
 
         Statement stat = dbConnection.createStatement();
@@ -454,10 +453,10 @@ public class DB {
      * @param status st
      * @return ArrayList
      */
-    public static ArrayList<Person> getParticipants(Meeting meeting, status st)
+    public static ArrayList<Person> getParticipants(int id, status st)
             throws SQLException {
        String query = "SELECT * FROM participant WHERE A_ID = " +
-               meeting.getId() + "AND status='" + st + "'";
+               id + "AND status='" + st + "'";
 
        Statement stat = dbConnection.createStatement();
        stat.executeQuery(query);
@@ -479,10 +478,10 @@ public class DB {
      * @param Meeting meeting
      * @param status st
      */
-    public static void changeStatus(Person person, Meeting meeting, status st)
+    public static void changeStatus(Person person, int id, status st)
             throws SQLException{
         String query = "UPDATE participant WHERE username = '" + person.getUsername()
-                + "' AND M_ID=" + meeting.getId()
+                + "' AND M_ID=" + id
                 + "(status) VALUES ('"
                 + st
                 +"')";
