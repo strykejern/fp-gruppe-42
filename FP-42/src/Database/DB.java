@@ -568,6 +568,41 @@ public class DB {
         stat.executeUpdate(query);
     }
 
+
+    public static ArrayList getMeetings(String username)
+                throws SQLException{
+        String query = "SELECT * FROM appointment WHERE creator= "+username+" AND meeting=1";
+
+        Statement stat = dbConnection.createStatement();
+        stat.executeUpdate(query);
+
+        ArrayList<Meeting> m = new ArrayList<Meeting>();
+
+        ResultSet result = stat.getResultSet();
+
+        while (result.next()){
+            int id                  = result.getInt("A_ID");
+            Person creator          = getPerson(result.getString("creator"));
+            Timespan time           = new Timespan(result.getTimestamp("start_time"), result.getTimestamp("end_time"));
+            String description      = result.getString("description");
+            String place            = result.getString("place");
+
+
+            if (place != null) {
+                m.add(new Meeting(id, creator, time, description, place));
+            }
+            else {
+                MeetingRoom meetingroom = getMeetingRoom(result.getInt("M_ID"));
+                m.add(new Meeting(id, creator, time, description, meetingroom));
+            }
+
+
+
+        }
+        return m;
+    }
+
+
     /*
      * Metode som oppretter en møteinnkallelse i databasen.
      * @param Invitation invitation
