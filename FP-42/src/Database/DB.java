@@ -724,10 +724,10 @@ public class DB {
         String query = "";
         if(answer.equals("no")){
         query = "UPDATE participant SET status = 'NOT_PARTICIPATING'"
-                + "' WHERE A_ID=" + id + " AND username='" + username + "'";
+                + " WHERE A_ID=" + id + " AND username = '" + username + "'";
         }else if(answer.equals("yes")){
             query = "UPDATE participant SET status = 'PARTICIPATING'"
-                + "' WHERE A_ID=" + id + " AND username='" + username + "'";
+                + " WHERE A_ID=" + id + " AND username = '" + username + "'";
         }
         Statement stat = dbConnection.createStatement();
         stat.executeUpdate(query);
