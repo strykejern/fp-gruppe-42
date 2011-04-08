@@ -721,7 +721,7 @@ public class DB {
 
     public static void answerInvitation(int id, String username, String answer)throws SQLException{
         String query = "UPDATE participant SET status = '" + answer
-                + " WHERE A_ID=" + id + " AND username=" + username;
+                + "' WHERE A_ID=" + id + " AND username='" + username + "'";
         Statement stat = dbConnection.createStatement();
         stat.executeUpdate(query);
     }
