@@ -33,9 +33,10 @@ public class Message {
      * @param subject, meldingsemne
      * @param content, meldinsgtekst
      */
-    public Message(String subject, String content) {
+    public Message(String subject, String content, String from) {
         this.subject = subject;
         this.content = content;
+        this.from = from;
     }
 
     /*
@@ -48,6 +49,11 @@ public class Message {
         this.id = id;
         this.subject = subject;
         this.content = content;
+    }
+
+    public Message(String subject, String content){
+        this.content = content;
+        this.subject = subject;
     }
 
     /*
