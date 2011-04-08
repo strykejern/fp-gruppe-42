@@ -271,6 +271,7 @@ public class commandLineInterface {
         System.out.println("** addparticipant ** -- meetingID personID[,personID,,,]");
         System.out.println("** addmeetingroom ** -- size and name");
         System.out.println("** answerinvitation ** -- id yes/no");
+        System.out.println("** inbox ** --");
         System.out.println("** viewcalendar ** -- me/username views your/user's calendar");
         System.out.println("** close ** --  stops the program");
         System.out.println("** help ** -- views the help menu");
