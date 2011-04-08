@@ -423,10 +423,10 @@ public class DB {
        return r;
     }
 
-    public static boolean isAvailable(int id, Timestamp start, Timestamp end)throws SQLException{
+    public static boolean isMeetingRoomAvailable(int id, Timestamp start, Timestamp end)throws SQLException{
         String query = "SELECT * FROM appointment WHERE" 
-               + " meeting_room.M_ID = appointment.M_ID AND "
-               + "((start_time > '" + start + "' AND start_time < '" + end + "') OR "
+               + " meeting_room.M_ID = appointment.M_ID AND meeting_room.M_ID = " + id
+               + " AND ((start_time > '" + start + "' AND start_time < '" + end + "') OR "
                + "(end_time > '" + start + "' AND end_time < '" + end + "') OR "
                + "(start_time < '" + start + "' AND end_time > '" + end + "'))";
         Statement stat = dbConnection.createStatement();
