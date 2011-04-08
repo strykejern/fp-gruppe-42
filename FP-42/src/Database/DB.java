@@ -234,7 +234,8 @@ public class DB {
                         + "JOIN participant "
                         + "ON creator='" + person.getUsername() + "' "
                         + "OR (username= '" + person.getUsername() + "' "
-                        + "AND appointment.A_ID = participant.A_ID) "
+                        + "AND appointment.A_ID = participant.A_ID "
+                        + "AND NOT status='NOT_PARTICIPATING') "
                         + "ORDER BY start_time";
         System.out.println(query);
 
