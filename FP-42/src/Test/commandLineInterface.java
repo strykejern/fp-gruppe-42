@@ -190,8 +190,8 @@ public class commandLineInterface {
                 }
             }
             else if(command.equals("answerinvitation")){
-                int id = Integer.parseInt(input.next());
-                String answer = input.next();
+                int id = Integer.parseInt(arguments.next());
+                String answer = arguments.next();
                 try{
                     DB.answerInvitation(id, me.getUsername(), answer);
                 }
