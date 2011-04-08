@@ -36,9 +36,9 @@ public class Meeting extends Appointment{
         throws SQLException {
         super(id, person, time, description, place);
         this.user = person;
-        this.notAnswered = DB.getParticipants(this, status.NOT_ANSWERED);
-        this.accepted = DB.getParticipants(this, status.PARTICIPATING);
-        this.declined = DB.getParticipants(this, status.NOT_PARTICIPATING);
+        this.notAnswered = DB.getParticipants(this.getId(), status.NOT_ANSWERED);
+        this.accepted = DB.getParticipants(this.getId(), status.PARTICIPATING);
+        this.declined = DB.getParticipants(this.getId(), status.NOT_PARTICIPATING);
     }
 
     /*
@@ -56,9 +56,9 @@ public class Meeting extends Appointment{
         throws SQLException {
         super(id, person, time, description, meetingRoom);
         this.user = person;
-        this.notAnswered = DB.getParticipants(this, status.NOT_ANSWERED);
-        this.accepted = DB.getParticipants(this, status.PARTICIPATING);
-        this.declined = DB.getParticipants(this, status.NOT_PARTICIPATING);
+        this.notAnswered = DB.getParticipants(this.getId(), status.NOT_ANSWERED);
+        this.accepted = DB.getParticipants(this.getId(), status.PARTICIPATING);
+        this.declined = DB.getParticipants(this.getId(), status.NOT_PARTICIPATING);
     }
 
      /*
@@ -75,9 +75,9 @@ public class Meeting extends Appointment{
         throws SQLException {
         super(person, time, description, meetingRoom);
         this.user = person;
-        this.notAnswered = DB.getParticipants(this, status.NOT_ANSWERED);
-        this.accepted = DB.getParticipants(this, status.PARTICIPATING);
-        this.declined = DB.getParticipants(this, status.NOT_PARTICIPATING);
+        this.notAnswered = DB.getParticipants(this.getId(), status.NOT_ANSWERED);
+        this.accepted = DB.getParticipants(this.getId(), status.PARTICIPATING);
+        this.declined = DB.getParticipants(this.getId(), status.NOT_PARTICIPATING);
     }
 
      /*
@@ -94,9 +94,9 @@ public class Meeting extends Appointment{
         throws SQLException {
         super(person, time, description, place);
         this.user = person;
-        this.notAnswered = DB.getParticipants(this, status.NOT_ANSWERED);
-        this.accepted = DB.getParticipants(this, status.PARTICIPATING);
-        this.declined = DB.getParticipants(this, status.NOT_PARTICIPATING);
+        this.notAnswered = DB.getParticipants(this.getId(), status.NOT_ANSWERED);
+        this.accepted = DB.getParticipants(this.getId(), status.PARTICIPATING);
+        this.declined = DB.getParticipants(this.getId(), status.NOT_PARTICIPATING);
     }
     /*
      * Denne skal sende beskjed ved å lagre, den beskjeden den tar inn,
@@ -131,7 +131,7 @@ public class Meeting extends Appointment{
     public void sendInvitation(Invitation invitation) {
         for(Person person : getParticipants()) {
             try{
-                DB.addInvitation(invitation, person, this.user);
+                DB.addInvitation(invitation, person.getUsername(), this.user.getUsername());
             }
             catch(SQLException e) {
 

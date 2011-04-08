@@ -9,7 +9,10 @@ import Database.DB;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.NoSuchElementException;
 import java.util.Scanner;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import no.ntnu.fp.model.Appointment;
 import no.ntnu.fp.model.Invitation;
 import no.ntnu.fp.model.Meeting;
@@ -180,21 +183,27 @@ public class commandLineInterface {
 
             }
             else if(command.equals("viewcalendar")){
-                String user = arguments.next();
+                String user;
+                try {
+                    user = arguments.next();
+                }
+                catch (NoSuchElementException e) {
+                    try {
+                        for (Appointment app : DB.getAppointments(me)) {
+                            System.out.println(app.toString());
+                        }
+                        continue;
+                    } catch (SQLException ex) {
+                        System.out.println("FAIL: " + e.getMessage());
+                        continue;
+                    }
+                }
 
                 System.out.println("");
                 System.out.println("Your appointments:");
                 try {
-                    if(user.equals("me")){
-                        for (Appointment app : DB.getAppointments(me)) {
-                            System.out.println(app.toString());
-                        }
-                    }
-                    else {
-                        for (Appointment app : DB.getAppointments(DB.getPerson(user))){
-                            System.out.println(app.toString());
-                        }
-
+                    for (Appointment app : DB.getAppointments(DB.getPerson(user))){
+                        System.out.println(app.toString());
                     }
                 } catch (SQLException ex) {
                     System.out.println("FAIL: " + ex.getMessage());
@@ -254,6 +263,12 @@ public class commandLineInterface {
         System.out.println("** viewcalendar ** -- me/username views your/user's calendar");
         System.out.println("** close ** --  stops the program");
         System.out.println("** help ** -- views the help menu");
+        System.out.println("");
+    }
+
+    static void error(){
+        System.out.println("");
+        System.out.println("Error: Check your syntax");
         System.out.println("");
     }
 }
