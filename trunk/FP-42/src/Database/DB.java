@@ -538,7 +538,6 @@ public class DB {
 
         Statement stat = dbConnection.createStatement();
         stat.executeUpdate(query);
-
     }
 
     /*
@@ -547,12 +546,12 @@ public class DB {
      * @param Person to
      * @param Person from
      */
-    public static void addMessage(Message message, Person to, Person from)
+    public static void addMessage(Message message, Person receiver, Person sender)
                 throws SQLException {
         String query = "INSERT INTO message"
-                + "(to, from, subject, text) VALUES ('"+
-                to.getUsername()+"', '"+
-                from.getUsername()+"', '"+
+                + "(receiver, sender, subject, text) VALUES ('"+
+                receiver.getUsername()+"', '"+
+                sender.getUsername()+"', '"+
                 message.getSubject()+"', '"+
                 message.getContent()+"')";
 
@@ -690,7 +689,7 @@ public class DB {
      * @param String to
      * @param String from
      */
-     public static void addInvitation(Invitation invitation, String to, String from)
+     public static void addInvitation(Invitation invitation, String receiver, String sender)
                 throws SQLException {
                 String text = "";
                 text += "Møte holdes " +invitation.getMeet().getTime().toString();
@@ -698,9 +697,9 @@ public class DB {
                 text += " og gjelder " + invitation.getMeet().getDescription();
 
         String query = "INSERT INTO message "
-                + "(to, from, subject, text) VALUES ('"+
-                to +"', '"+
-                from +"','"+
+                + "(receiver, sender, subject, text) VALUES ('"+
+                receiver +"', '"+
+                sender +"','"+
                 invitation.getMeet().getDescription()+"','"+
                 text+"')";
 
