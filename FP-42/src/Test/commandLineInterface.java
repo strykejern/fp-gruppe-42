@@ -102,9 +102,7 @@ public class commandLineInterface {
             	} catch (SQLException ex) {
                 	System.out.println("FAIL: " + ex.getMessage());
             	}
-
             }
-
             else if(command.equals("showmeetingrooms")) {
 
                 System.out.println("");
@@ -155,15 +153,16 @@ public class commandLineInterface {
                 catch(SQLException e) {
                 }
             }
-
             else if(command.equals("addparticipant")){
                 String to = arguments.next();
                 int id = Integer.parseInt(arguments.next());
                 try{
-                    DB.addParticipant(to, id);
                     Meeting m = DB.getMeeting(id);
-                    Invitation i = new Invitation(m, Invitation.status.NOT_ANSWERED);
-                    DB.addInvitation(i, to, username);
+                    if(m != null){
+                        DB.addParticipant(to, id);
+                        Invitation i = new Invitation(m, Invitation.status.NOT_ANSWERED);
+                        DB.addInvitation(i, to, username);
+                    }
                 }
                 catch(SQLException e){
                     System.out.println("FAIL: " + e.getMessage());
