@@ -402,7 +402,7 @@ public class DB {
 
     public static ArrayList<MeetingRoom> getMeetingRooms (int size, Timestamp start, Timestamp end)
              throws SQLException {
-       String query = "SELECT * FROM meeting_room WHERE size > 20 AND "
+       String query = "SELECT * FROM meeting_room WHERE size > " + size + " AND "
                + "not exists (SELECT * FROM appointment WHERE "
                + "meeting_room.M_ID = appointment.M_ID AND "
                + "((start_time > '" + start + "' AND start_time < '" + end + "') OR "
@@ -415,10 +415,10 @@ public class DB {
        ArrayList<MeetingRoom> r = new ArrayList<MeetingRoom>();
        while (result.next()){
             String name  = result.getString("name");
-            size  = result.getInt("size");
+            int capacity  = result.getInt("size");
             int id = result.getInt("M_ID");
 
-            r.add(new MeetingRoom(id,name,size));
+            r.add(new MeetingRoom(id,name,capacity));
        }
        return r;
     }
