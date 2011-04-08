@@ -703,7 +703,7 @@ public class DB {
      public static void addInvitation(Invitation invitation, String receiver, String sender)
                 throws SQLException {
                 String text = "";
-                text += "Møte holdes " +invitation.getMeet().getTime().toString();
+                text += "Møte id er: " + invitation.getMeet().getId() + "\nMøte holdes " +invitation.getMeet().getTime().toString();
                 text += " i rom " + invitation.getMeet().getMeetingRoom().getName();
                 text += " og gjelder " + invitation.getMeet().getDescription();
 
@@ -721,8 +721,14 @@ public class DB {
     }
 
     public static void answerInvitation(int id, String username, String answer)throws SQLException{
-        String query = "UPDATE participant SET status = '" + answer
+        String query = "";
+        if(answer.equals("no")){
+        query = "UPDATE participant SET status = 'NOT_PARTICIPATING'"
                 + "' WHERE A_ID=" + id + " AND username='" + username + "'";
+        }else if(answer.equals("yes")){
+            query = "UPDATE participant SET status = 'PARTICIPATING'"
+                + "' WHERE A_ID=" + id + " AND username='" + username + "'";
+        }
         Statement stat = dbConnection.createStatement();
         stat.executeUpdate(query);
     }
