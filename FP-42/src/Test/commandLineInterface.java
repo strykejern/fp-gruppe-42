@@ -156,14 +156,14 @@ public class commandLineInterface {
                 }
             }
             else if(command.equals("addparticipant")){
-                String to = arguments.next();
                 int id = Integer.parseInt(arguments.next());
+                String receiver = arguments.next();
                 try{
                     Meeting m = DB.getMeeting(id);
                     if(m != null){
-                        DB.addParticipant(to, id);
+                        DB.addParticipant(receiver, id);
                         Invitation i = new Invitation(m, Invitation.status.NOT_ANSWERED);
-                        DB.addInvitation(i, to, username);
+                        DB.addInvitation(i, receiver, username);
                     }
                 }
                 catch(SQLException e){
