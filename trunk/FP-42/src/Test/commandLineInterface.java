@@ -148,7 +148,7 @@ public class commandLineInterface {
                         System.out.println("Møte oppdatert");
                     }
                 }catch(SQLException e){
-                    System.out.println("Hei" + e.getMessage());
+                    System.out.println("FAIL: " + e.getMessage());
                 }
             }
             else if(command.equals("deleteappointment")){
