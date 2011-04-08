@@ -426,7 +426,7 @@ public class DB {
     }
 
     public static boolean isMeetingRoomAvailable(int id, Timestamp start, Timestamp end)throws SQLException{
-        String query = "SELECT * FROM appointment WHERE" 
+        String query = "SELECT * FROM appointment, meeting_room WHERE"
                + " meeting_room.M_ID = appointment.M_ID AND meeting_room.M_ID = " + id
                + " AND ((start_time > '" + start + "' AND start_time < '" + end + "') OR "
                + "(end_time > '" + start + "' AND end_time < '" + end + "') OR "
