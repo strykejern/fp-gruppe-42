@@ -597,7 +597,8 @@ public class DB {
         while(result.next()){
             String subject = result.getString("subject");
             String content = result.getString("text");
-            m.add(new Message(subject, content));
+            String from = result.getString("sender");
+            m.add(new Message(subject, content, from));
         }
         return m;
     }
