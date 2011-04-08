@@ -574,7 +574,7 @@ public class DB {
         Statement stat = dbConnection.createStatement();
         stat.executeUpdate(query);
     }
-
+   
     /*
      * Metode som oppretter en melding i databasen, med en avsender og mottaker.
      * @param Message message
@@ -583,7 +583,7 @@ public class DB {
      */
     public static void addMessage(Message message, Person receiver, Person sender)
                 throws SQLException {
-        String query = "INSERT INTO message"
+        String query = "INSERT INTO message "
                 + "(receiver, sender, subject, text) VALUES ('"+
                 receiver.getUsername()+"', '"+
                 sender.getUsername()+"', '"+
