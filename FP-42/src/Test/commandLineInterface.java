@@ -121,56 +121,27 @@ public class commandLineInterface {
                 for (MeetingRoom m : rooms) {
                         System.out.println(m.toString());
                 }
-
             }
             else if(command.equals("editappointment")){
-                int appID = Integer.parseInt(arguments.next());
-
+                int id = Integer.parseInt(arguments.next());
                 Timestamp start = Timestamp.valueOf(arguments.next() + " " + arguments.next());
                 Timestamp end = Timestamp.valueOf(arguments.next() + " " + arguments.next());
-                Timespan span = new Timespan(start, end);
-
-                String place = arguments.next();
-
-                if (place.startsWith("#")){
-                    MeetingRoom room;
-                    try {
-                        Appointment app = DB.getAppointment(appID, username);
-                        ArrayList<MeetingRoom> m = DB.getMeetingRooms(Integer.parseInt(place.substring(1)), start, end);
-                        for (MeetingRoom mroom : m) {
-                            System.out.println(mroom.toString());
+                try{
+                    Meeting m = DB.getMeeting(id);
+                    if(m.getMeetingRoom() != null){
+                        if(DB.isAvailable(m.getMeetingRoom().getId(), start, end)){
+                            DB.editAppointment(m);
+                            System.out.println("Møte oppdatert");
                         }
-                        room = m.get(Integer.parseInt(input.next())-1);
-                        app.setTime(span);
-                        app.setMeetingRoom(room);
-                    } catch (SQLException ex) {
-                        System.out.println("FAIL: " + ex.getMessage());
-                        return;
+                        else{
+                            System.out.println("Møterommet var ikke ledig på dette tidspunktet");
+                        }
                     }
-                }
-                else{
-                    try {
-                    Appointment app = DB.getAppointment(appID, username);
-                    app.setTime(span);
-                    app.setPlace(place);
-
+                    else{
+                        DB.editAppointment(m);
+                        System.out.println("Møte oppdatert");
                     }
-                    catch (SQLException ex) {
-                        System.out.println("FAIL: " + ex.getMessage());
-                        return;
-                    }
-                }
-                try {
-                    //DB.editAppointment(app);
-                    ArrayList<Person> p = DB.getParticipants(appID, DB.status.ALL);
-                    for (Person person : p) {
-                        DB.changeStatus(person, appID, DB.status.NOT_ANSWERED);
-                    }
-
-                } catch (SQLException ex) {
-                    System.out.println("FAIL: " + ex.getMessage());
-                }
-
+                }catch(SQLException e){}
             }
             else if(command.equals("deleteappointment")){
                 int id = Integer.parseInt(arguments.next());
