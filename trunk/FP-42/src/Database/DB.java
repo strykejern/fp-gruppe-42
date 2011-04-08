@@ -272,9 +272,11 @@ public class DB {
     public static void editAppointment(Appointment appointment)
         throws SQLException{
 
-        String query ="UPDATE appointment" +
-                "(start_time, end_time) SET ('" + appointment.getTime().getStart() + "', '" +
-                appointment.getTime().getEnd() + "')";
+        String query ="UPDATE appointment SET "
+                + "start_time='" + appointment.getTime().getStart()
+                + "', end_time='" + appointment.getTime().getEnd()
+                + "' WHERE A_ID=" + appointment.getId();
+        System.out.println(query);
 
         Statement stat = dbConnection.createStatement();
 
@@ -350,15 +352,15 @@ public class DB {
         String place = result.getString("place");
         MeetingRoom meetingroom = getMeetingRoom(result.getInt("M_ID"));
 
-        Meeting m;
+        Meeting meeting;
         if (place.equals("")){
-        m = new Meeting(creator, time, description, meetingroom);
+        meeting = new Meeting(id, creator, time, description, meetingroom);
         }
         else {
-        m = new Meeting(creator, time, description, place);
+        meeting = new Meeting(id, creator, time, description, place);
         }
         
-        return m;
+        return meeting;
 
     }
 
