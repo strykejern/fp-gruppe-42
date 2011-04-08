@@ -11,6 +11,7 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Scanner;
 import no.ntnu.fp.model.Appointment;
+import no.ntnu.fp.model.Invitation;
 import no.ntnu.fp.model.Meeting;
 import no.ntnu.fp.model.MeetingRoom;
 import no.ntnu.fp.model.Person;
@@ -66,45 +67,41 @@ public class commandLineInterface {
             
             String command      = arguments.next();
 
-            if (command.equals("addappointment")){
-                String type = arguments.next();
-                Timestamp start = Timestamp.valueOf(arguments.next() + " " + arguments.next());
-                Timestamp end = Timestamp.valueOf(arguments.next() + " " + arguments.next());
-                Timespan span = new Timespan(start, end);
+           if (command.equals("addappointment")){
+            	String type = arguments.next();
+            	Timestamp start = Timestamp.valueOf(arguments.next() + " " + arguments.next());
+            	Timestamp end = Timestamp.valueOf(arguments.next() + " " + arguments.next());
+            	Timespan span = new Timespan(start, end);
 
-                String place = arguments.next();
-                String description = arguments.nextLine();
+            	String place = arguments.next();
+            	String description = arguments.nextLine();
 
-                Appointment app;
+            	Appointment app;
 
-                if (place.startsWith("#")){
-                    MeetingRoom room;
+            	if (place.startsWith("#")){
+                	MeetingRoom room;
 
-                    try {
-                        ArrayList<MeetingRoom> m = DB.getMeetingRooms(Integer.parseInt(place.substring(1)), start, end);
-                        for (MeetingRoom mroom : m) {
-                            System.out.println(mroom.toString());
-                        }
+                	try {
+                    	room = DB.getMeetingRoom(Integer.parseInt(place.substring(1)));
 
-                        room = m.get(Integer.parseInt(input.next())-1);
+                	} catch (SQLException ex) {
+                    	System.out.println("FAIL: " + ex.getMessage());
+                    	return;
+                	}
 
-                    } catch (SQLException ex) {
-                        System.out.println("FAIL: " + ex.getMessage());
-                        return;
-                    }
-
-                    app = new Appointment(me, span, description, room);
-                }
-                else{
-                    app = new Appointment(me, span, description, place);
-                }
-                try {
-                    DB.addAppointment(app, type.equals("meeting"));
-                } catch (SQLException ex) {
-                    System.out.println("FAIL: " + ex.getMessage());
-                }
+                	app = new Appointment(me, span, description, room);
+            	}
+            	else{
+                	app = new Appointment(me, span, description, place);
+            	}
+            	try {
+                	DB.addAppointment(app, type.equals("meeting"));
+            	} catch (SQLException ex) {
+                	System.out.println("FAIL: " + ex.getMessage());
+            	}
 
             }
+
             else if(command.equals("showmeetingrooms")) {
 
                 System.out.println("");
@@ -119,7 +116,7 @@ public class commandLineInterface {
 
                     }
                 if(rooms.isEmpty()) {
-                    System.out.println("No availeble rooms of this size");
+                    System.out.println("No available rooms of this size");
                 }
                 for (MeetingRoom m : rooms) {
                         System.out.println(m.toString());
@@ -164,7 +161,7 @@ public class commandLineInterface {
                     }
                 }
                 try {
-                    DB.editAppointment(app);
+                    //DB.editAppointment(app);
                     ArrayList<Person> p = DB.getParticipants(appID, DB.status.ALL);
                     for (Person person : p) {
                         DB.changeStatus(person, appID, DB.status.NOT_ANSWERED);
@@ -186,8 +183,13 @@ public class commandLineInterface {
             }
 
             else if(command.equals("addparticipant")){
+                String to = arguments.next();
+                int id = Integer.parseInt(arguments.next());
                 try{
-                    DB.addParticipant(arguments.next(), Integer.parseInt(arguments.next()));
+                    DB.addParticipant(to, id);
+                    Meeting m = DB.getMeeting(id);
+                    Invitation i = new Invitation(m, Invitation.status.NOT_ANSWERED);
+                    DB.addInvitation(i, to, username);
                 }
                 catch(SQLException e){}
             }
