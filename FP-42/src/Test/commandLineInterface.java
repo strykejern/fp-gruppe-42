@@ -132,7 +132,7 @@ public class commandLineInterface {
                 try{
                     Meeting m = DB.getMeeting(id);
                     if(m.getMeetingRoom() != null){
-                        if(DB.isAvailable(m.getMeetingRoom().getId(), start, end)){
+                        if(DB.isMeetingRoomAvailable(m.getMeetingRoom().getId(), start, end)){
                             DB.editAppointment(m);
                             System.out.println("Møte oppdatert");
                         }
@@ -218,35 +218,21 @@ public class commandLineInterface {
             }
             else if(command.equals("tracemeetings")){
                 System.out.println("");
+                    
+                System.out.println("Hvilket møte vil du sjekke møteinnkallingen for?");
 
-                ArrayList<Meeting> meeting = new ArrayList<Meeting>();
-                    try {
-                        meeting = DB.getMeetings(me);
-                    } catch (SQLException ex) {
+                String id = input.nextLine();
 
-                    }
-                if(meeting.isEmpty()) {
-                    System.out.println("No meetings in your calender");
-                }else{
-                    for (Meeting m : meeting) {
-                        System.out.println(m.toString());
-                    }
-                    System.out.println("Hvilket møte vil du sjekke møteinnkallingen for?");
+                try{
+                    System.out.println(DB.traceMeeting(id));
+                }catch (SQLException ex) {
 
-                    String id = input.nextLine();
-
-                    try{
-                        System.out.println(DB.traceMeeting(id));
-                    }catch (SQLException ex) {
-
-                    }
                 }
             }
             else{
                 System.out.println("Invalid command");
             }
-       }
-
+        }
     }
 
     static void help(){
