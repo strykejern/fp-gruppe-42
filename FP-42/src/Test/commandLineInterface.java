@@ -66,6 +66,8 @@ public class commandLineInterface {
 
             String line         = input.nextLine();
 
+            if (line.isEmpty()) continue;
+
             Scanner arguments   = new Scanner(line);
             
             String command      = arguments.next();
@@ -127,11 +129,13 @@ public class commandLineInterface {
                 int id = Integer.parseInt(arguments.next());
                 Timestamp start = Timestamp.valueOf(arguments.next() + " " + arguments.next());
                 Timestamp end = Timestamp.valueOf(arguments.next() + " " + arguments.next());
+                Timespan span = new Timespan(start, end);
                 try{
-                    Meeting m = DB.getMeeting(id);
-                    if(m.getMeetingRoom() != null){
-                        if(DB.isMeetingRoomAvailable(m.getMeetingRoom().getId(), start, end)){
-                            DB.editAppointment(m);
+                    Meeting meeting = DB.getMeeting(id);
+                    if(meeting.getMeetingRoom() != null){
+                        if(DB.isMeetingRoomAvailable(meeting.getMeetingRoom().getId(), start, end)){
+                            meeting.setTime(span);
+                            DB.editAppointment(meeting);
                             System.out.println("Møte oppdatert");
                         }
                         else{
@@ -139,7 +143,7 @@ public class commandLineInterface {
                         }
                     }
                     else{
-                        DB.editAppointment(m);
+                        DB.editAppointment(meeting);
                         System.out.println("Møte oppdatert");
                     }
                 }catch(SQLException e){
