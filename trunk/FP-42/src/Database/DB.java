@@ -334,8 +334,8 @@ public class DB {
     public static Meeting getMeeting(int id)
             throws SQLException {
 
-        String query = "SELECT * FROM appointment WHERE A_ID = "
-            + id + " AND meeting = 1";
+        String query = "SELECT * FROM appointment WHERE A_ID="
+            + id + " AND meeting=1";
         Statement stat = dbConnection.createStatement();
 
         stat.executeQuery(query);
@@ -440,9 +440,11 @@ public class DB {
      * @param int id
      * @return MeetingRoom
      */
-        public static MeetingRoom getMeetingRoom (int id)
-             throws SQLException {
+
+    public static MeetingRoom getMeetingRoom (int id)
+         throws SQLException {
        String query = "SELECT * FROM meeting_room WHERE M_ID=" + id;
+       System.out.println(query);
        Statement stat = dbConnection.createStatement();
        stat.executeQuery(query);
 
