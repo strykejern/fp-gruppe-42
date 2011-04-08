@@ -142,7 +142,9 @@ public class commandLineInterface {
                         DB.editAppointment(m);
                         System.out.println("Møte oppdatert");
                     }
-                }catch(SQLException e){}
+                }catch(SQLException e){
+                    System.out.println("Hei" + e.getMessage());
+                }
             }
             else if(command.equals("deleteappointment")){
                 int id = Integer.parseInt(arguments.next());
@@ -239,7 +241,7 @@ public class commandLineInterface {
         System.out.println("*****************************************************************************************************************************************************");
         System.out.println("** addappointment ** -- type(\"meeting\"/\"appointment\") start end place/#meetingRoomSize description. Want to book room? Type first showmeetingrooms");
         System.out.println("** showmeetingrooms ** -- size");
-        System.out.println("** editappointment ** -- id start end place/#meetingRoom description");
+        System.out.println("** editappointment ** -- id start end");
         System.out.println("** deleteappointment ** -- id");
         System.out.println("** addparticipant ** -- meetingID personID[,personID,,,]");
         System.out.println("** addmeetingroom ** -- size and name");
