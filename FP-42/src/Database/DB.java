@@ -409,6 +409,7 @@ public class DB {
                + "((start_time > '" + start + "' AND start_time < '" + end + "') OR "
                + "(end_time > '" + start + "' AND end_time < '" + end + "') OR "
                + "(start_time < '" + start + "' AND end_time > '" + end + "')))";
+       System.out.println(query);
        Statement stat = dbConnection.createStatement();
        stat.executeQuery(query);
 
@@ -430,6 +431,7 @@ public class DB {
                + " AND ((start_time > '" + start + "' AND start_time < '" + end + "') OR "
                + "(end_time > '" + start + "' AND end_time < '" + end + "') OR "
                + "(start_time < '" + start + "' AND end_time > '" + end + "'))";
+        System.out.println(query);
         Statement stat = dbConnection.createStatement();
         ResultSet r = stat.executeQuery(query);
         return !r.next();
