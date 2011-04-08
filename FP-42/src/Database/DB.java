@@ -230,8 +230,9 @@ public class DB {
         WHERE creator =  "ove" OR ( username =  "ove" AND appointment.A_ID = participant.A_ID )*/
 
         String query =    "SELECT DISTINCT appointment.A_ID, creator, start_time, end_time, description, place "
-                        + "FROM appointment, participant "
-                        + "WHERE creator='" + person.getUsername() + "' "
+                        + "FROM appointment "
+                        + "LEFT JOIN participant "
+                        + "ON creator='" + person.getUsername() + "' "
                         + "OR (username= '" + person.getUsername() + "' "
                         + "AND appointment.A_ID = participant.A_ID) "
                         + "ORDER BY start_time";

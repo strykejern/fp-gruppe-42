@@ -61,7 +61,7 @@ public class commandLineInterface {
         System.out.println("SUCCESS! Logged in as \"" + username + "\"");
 
         help();
-        while (true) {
+        commandloop: while (true) {
             System.out.print("$# ");
 
             String line         = input.nextLine();
@@ -191,16 +191,10 @@ public class commandLineInterface {
                     user = arguments.next();
                 }
                 catch (NoSuchElementException e) {
-                    try {
-                        for (Appointment app : DB.getAppointments(me)) {
-                            System.out.println(app.toString());
-                        }
-                        continue;
-                    } catch (SQLException ex) {
-                        System.out.println("FAIL: " + e.getMessage());
-                        continue;
-                    }
+                    user = me.getUsername();
                 }
+
+                if (user.equals("me")) user = me.getUsername();
 
                 System.out.println("");
                 System.out.println("Your appointments:");
@@ -210,6 +204,7 @@ public class commandLineInterface {
                     }
                 } catch (SQLException ex) {
                     System.out.println("FAIL: " + ex.getMessage());
+                    error();
                 }
             }
             else if(command.equals("help")) {
@@ -234,6 +229,7 @@ public class commandLineInterface {
             }
             else{
                 System.out.println("Invalid command");
+                error();
             }
         }
     }
