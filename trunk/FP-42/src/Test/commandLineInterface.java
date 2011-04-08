@@ -165,7 +165,10 @@ public class commandLineInterface {
                     Invitation i = new Invitation(m, Invitation.status.NOT_ANSWERED);
                     DB.addInvitation(i, to, username);
                 }
-                catch(SQLException e){}
+                catch(SQLException e){
+                    System.out.println("FAIL: " + e.getMessage());
+                    error();
+                }
             }
             else if(command.equals("addmeetingroom")) {
                 int size = Integer.parseInt(arguments.next());
