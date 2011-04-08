@@ -282,6 +282,16 @@ public class DB {
 
         stat.executeUpdate(query);
 
+        String subject = "Appointment " + appointment.getId() + " edited";
+        String content = "Appointment " + appointment.getId() + " had been"
+                + "edited to be from " + appointment.getTime().getStart()
+                + " to " + appointment.getTime().getEnd();
+
+        Message mail = new Message(subject, content);
+        for (Person user : DB.getParticipants(appointment.getId(), status.ALL)){
+            addMessage(mail, user, appointment.getCreator());
+            changeStatus(user, appointment.getId(), status.NOT_ANSWERED);
+        }
     }
 
 
