@@ -333,6 +333,37 @@ public class DB {
         return m;
     }
 
+    public static Meeting getMeeting(int id)
+            throws SQLException {
+
+        String query = "SELECT * FROM appointment WHERE A_ID="
+            + id + "AND meeting=1";
+        Statement stat = dbConnection.createStatement();
+
+        stat.executeQuery(query);
+        
+        ResultSet result = stat.getResultSet();
+        if (!result.next()) { throw new SQLException("No meeting");
+       }
+
+        Person creator = getPerson(result.getString("creator"));
+        Timespan time = new Timespan(result.getTimestamp("start_time"), result.getTimestamp("Sluttid"));
+        String description = result.getString("description");
+        String place = result.getString("place");
+        MeetingRoom meetingroom = getMeetingRoom(result.getInt("M_ID"));
+
+        Meeting m;
+        if (place.equals("")){
+        m = new Meeting(creator, time, description, meetingroom);
+        }
+        else {
+        m = new Meeting(creator, time, description, place);
+        }
+        
+        return m;
+
+    }
+
     /*
      * Metode som legger et møterom til i databasen.
      * @param MeetingRoom room
@@ -374,9 +405,12 @@ public class DB {
 
     public static ArrayList<MeetingRoom> getMeetingRooms (int size, Timestamp start, Timestamp end)
              throws SQLException {
-       String query = "SELECT * FROM meeting_room, appointment WHERE size > " + size
-               + " AND meeting_room.M_ID = appointment_M_ID AND ((start_time < '" + start
-               + "' AND end_time < '" + end + "') OR start_time > '" + end + "')";
+       String query = "SELECT * FROM meeting_room WHERE size > 20 AND "
+               + "not exists (SELECT * FROM appointment WHERE "
+               + "meeting_room.M_ID = appointment.M_ID AND "
+               + "((start_time > '" + start + "' AND start_time < '" + end + "') OR "
+               + "(end_time > '" + start + "' AND end_time < '" + end + "') OR "
+               + "(start_time < '" + start + "' AND end_time > '" + end + "')))";
        System.out.println(query);
        Statement stat = dbConnection.createStatement();
        stat.executeQuery(query);
@@ -401,7 +435,7 @@ public class DB {
      */
         public static MeetingRoom getMeetingRoom (int id)
              throws SQLException {
-       String query = "SELECT * FROM meeting_room WHERE M_ID" + id;
+       String query = "SELECT * FROM meeting_room WHERE M_ID=" + id;
        Statement stat = dbConnection.createStatement();
        stat.executeQuery(query);
 
@@ -438,7 +472,6 @@ public class DB {
                 status.NOT_ANSWERED + "')";
 
         Statement stat = dbConnection.createStatement();
-
         stat.executeUpdate(query);
     }
 
@@ -645,10 +678,10 @@ public class DB {
     /*
      * Metode som oppretter en møteinnkallelse i databasen.
      * @param Invitation invitation
-     * @param Person to
-     * @param Person from
+     * @param String to
+     * @param String from
      */
-     public static void addInvitation(Invitation invitation, Person to, Person from)
+     public static void addInvitation(Invitation invitation, String to, String from)
                 throws SQLException {
                 String text = "";
                 text += "Møte holdes " +invitation.getMeet().getTime().toString();
@@ -657,10 +690,12 @@ public class DB {
 
         String query = "INSERT INTO message "
                 + "(to, from, subject, text) VALUES ('"+
-                to.getUsername()+"', '"+
-                from.getUsername()+"','"+
+                to +"', '"+
+                from +"','"+
                 invitation.getMeet().getDescription()+"','"+
                 text+"')";
+
+        System.out.println(query);
 
         Statement stat = dbConnection.createStatement();
         stat.executeUpdate(query);
