@@ -592,6 +592,8 @@ public class DB {
                 message.getSubject()+"', '"+
                 message.getContent()+"')";
 
+        System.out.println(query);
+
         Statement stat = dbConnection.createStatement();
         stat.executeUpdate(query);
 
