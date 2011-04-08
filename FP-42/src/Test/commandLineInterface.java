@@ -247,20 +247,20 @@ public class commandLineInterface {
                     }
                 if(meeting.isEmpty()) {
                     System.out.println("No meetings in your calender");
-                }
-                for (Meeting m : meeting) {
+                }else{
+                    for (Meeting m : meeting) {
                         System.out.println(m.toString());
+                    }
+                    System.out.println("Hvilket møte vil du sjekke møteinnkallingen for?");
+
+                    String id = input.nextLine();
+
+                    try{
+                        System.out.println(DB.traceMeeting(id));
+                    }catch (SQLException ex) {
+
+                    }
                 }
-                System.out.println("Hvilket møte vil du sjekke møteinnkallingen for?");
-
-                String id = input.nextLine();
-
-                try{
-                    System.out.println(DB.traceMeeting(id));
-                }catch (SQLException ex) {
-
-                }
-
             }
             else{
                 System.out.println("Invalid command");
