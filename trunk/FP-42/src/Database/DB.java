@@ -316,7 +316,7 @@ public class DB {
         while (result.next()){
             int id = result.getInt("A_ID");
             Person creator = getPerson(result.getString("creator"));
-            Timespan time = new Timespan(result.getTimestamp("start_time"), result.getTimestamp("Sluttid"));
+            Timespan time = new Timespan(result.getTimestamp("start_time"), result.getTimestamp("end_time"));
             String description = result.getString("description");
             String place = result.getString("place");
             MeetingRoom meetingroom = getMeetingRoom(result.getInt("M_ID"));
@@ -334,8 +334,8 @@ public class DB {
     public static Meeting getMeeting(int id)
             throws SQLException {
 
-        String query = "SELECT * FROM appointment WHERE A_ID="
-            + id + "AND meeting=1";
+        String query = "SELECT * FROM appointment WHERE A_ID = "
+            + id + " AND meeting = 1";
         Statement stat = dbConnection.createStatement();
 
         stat.executeQuery(query);
@@ -345,7 +345,7 @@ public class DB {
        }
 
         Person creator = getPerson(result.getString("creator"));
-        Timespan time = new Timespan(result.getTimestamp("start_time"), result.getTimestamp("Sluttid"));
+        Timespan time = new Timespan(result.getTimestamp("start_time"), result.getTimestamp("end_time"));
         String description = result.getString("description");
         String place = result.getString("place");
         MeetingRoom meetingroom = getMeetingRoom(result.getInt("M_ID"));
@@ -491,7 +491,7 @@ public class DB {
     public static ArrayList<Person> getParticipants(int id, status st)
             throws SQLException {
        String query = "SELECT * FROM participant WHERE A_ID = " +
-               id + "AND status='" + st + "'";
+               id + " AND status = '" + st + "'";
 
        Statement stat = dbConnection.createStatement();
        stat.executeQuery(query);
