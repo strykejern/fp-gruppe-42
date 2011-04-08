@@ -17,6 +17,7 @@ import no.ntnu.fp.model.Appointment;
 import no.ntnu.fp.model.Invitation;
 import no.ntnu.fp.model.Meeting;
 import no.ntnu.fp.model.MeetingRoom;
+import no.ntnu.fp.model.Message;
 import no.ntnu.fp.model.Person;
 import no.ntnu.fp.model.Timespan;
 
@@ -184,11 +185,20 @@ public class commandLineInterface {
                     System.out.println(name + "added to database");
                 }
                 catch(SQLException e) {
-
+                    System.out.println("FAIL: " + e.getMessage());
+                    error();
                 }
             }
             else if(command.equals("answerinvitation")){
-
+                int id = Integer.parseInt(input.next());
+                String answer = input.next();
+                try{
+                    DB.answerInvitation(id, me.getUsername(), answer);
+                }
+                catch(SQLException e){
+                    System.out.println("FAIL: " + e.getMessage());
+                    error();
+                }
             }
             else if(command.equals("viewcalendar")){
                 String user;
@@ -231,6 +241,17 @@ public class commandLineInterface {
                 }catch (SQLException ex) {
 
                 }
+            }
+            else if(command.equals("inbox")){
+                try{
+                    ArrayList<Message> inbox = DB.getMessages(me.getUsername());
+                    for(Message m : inbox){
+                        System.out.println(m.toString());
+                    }
+               }catch(SQLException ex){
+                   System.out.println("FAIL: " + ex.getMessage());
+                   error();
+               }
             }
             else{
                 System.out.println("Invalid command");

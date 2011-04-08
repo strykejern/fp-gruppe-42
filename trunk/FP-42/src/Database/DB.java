@@ -583,27 +583,23 @@ public class DB {
     public static ArrayList<Message> getMessages(String username)
                 throws SQLException{
 
-        String query = "SELECT * FROM message WHERE to= "+username+"";
-        String query1 = "INSERT INTO message (read) VALUES (1)";
+        String query = "SELECT * FROM message WHERE receiver='"+username+"'";
+        //String query1 = "UPDATE message SET read=1";
 
         Statement stat = dbConnection.createStatement();
         stat.executeQuery(query);
 
         ResultSet result = stat.getResultSet();
-
-        stat.executeQuery(query1);
+        //stat.executeQuery(query1);
 
         ArrayList<Message> m = new ArrayList<Message>();
 
-        if(result!=null){
+        while(result.next()){
             String subject = result.getString("subject");
             String content = result.getString("text");
             m.add(new Message(subject, content));
-            result.close();
-            stat.close();
-
-            return m;
-         } else throw new SQLException();
+        }
+        return m;
     }
 
     /*
@@ -719,6 +715,13 @@ public class DB {
 
         System.out.println(query);
 
+        Statement stat = dbConnection.createStatement();
+        stat.executeUpdate(query);
+    }
+
+    public static void answerInvitation(int id, String username, String answer)throws SQLException{
+        String query = "UPDATE participant SET status = '" + answer
+                + " WHERE A_ID=" + id + " AND username=" + username;
         Statement stat = dbConnection.createStatement();
         stat.executeUpdate(query);
     }
