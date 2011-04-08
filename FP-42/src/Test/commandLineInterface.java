@@ -158,6 +158,7 @@ public class commandLineInterface {
                     System.out.println("Appointment " +id+ " has been deleted!");
                 }
                 catch(SQLException e) {
+                    System.out.println("FAIL: " + e.getMessage());
                 }
             }
             else if(command.equals("addparticipant")){

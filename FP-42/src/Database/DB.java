@@ -301,7 +301,28 @@ public class DB {
      */
     public static void removeAppointment(int id)
             throws SQLException {
+        Meeting meet = getMeeting(id);
+
+        String subject = "Deleted appointment " + id;
+        String content = "Appointment " + id + " at " + meet.getTime().getStart();
+        Message mail = new Message(subject, content);
+
+        for (Person participant : getParticipants(id, status.ALL)){
+            addMessage(mail, participant, meet.getCreator());
+        }
+
+        removeParticipants(id);
+        
         String query = "DELETE FROM appointment WHERE A_ID=" +
+                id;
+        Statement stat = dbConnection.createStatement();
+
+        stat.executeUpdate(query);
+    }
+
+    private static void removeParticipants(int id)
+            throws SQLException{
+        String query = "DELETE FROM participant WHERE A_ID=" +
                 id;
         Statement stat = dbConnection.createStatement();
 
