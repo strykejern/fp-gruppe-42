@@ -181,7 +181,6 @@ public class DB {
                 appointment.getTime().getEnd() + "', '" +
                 appointment.getDescription() + "";
 
-
         if (appointment.isAtMeetingRoom() == 1 ){
             query += "','', " + appointment.getMeetingRoom().getId();
         }
@@ -253,7 +252,6 @@ public class DB {
             String description      = result.getString("description");
             String place            = result.getString("place");
 
-
             if (place != null) {
                 a.add(new Appointment(id, creator, time, description, place));
             }
@@ -274,9 +272,8 @@ public class DB {
         throws SQLException{
 
         String query ="UPDATE appointment" +
-                "(start_time, end_time, place) SET ('" + appointment.getTime().getStart() + "', '" +
-                appointment.getTime().getEnd() + "', '" +
-                appointment.getPlace() + "',)";
+                "(start_time, end_time) SET ('" + appointment.getTime().getStart() + "', '" +
+                appointment.getTime().getEnd() + "')";
 
         Statement stat = dbConnection.createStatement();
 
@@ -411,7 +408,6 @@ public class DB {
                + "((start_time > '" + start + "' AND start_time < '" + end + "') OR "
                + "(end_time > '" + start + "' AND end_time < '" + end + "') OR "
                + "(start_time < '" + start + "' AND end_time > '" + end + "')))";
-       System.out.println(query);
        Statement stat = dbConnection.createStatement();
        stat.executeQuery(query);
 
@@ -427,6 +423,16 @@ public class DB {
        return r;
     }
 
+    public static boolean isAvailable(int id, Timestamp start, Timestamp end)throws SQLException{
+        String query = "SELECT * FROM appointment WHERE" 
+               + " meeting_room.M_ID = appointment.M_ID AND "
+               + "((start_time > '" + start + "' AND start_time < '" + end + "') OR "
+               + "(end_time > '" + start + "' AND end_time < '" + end + "') OR "
+               + "(start_time < '" + start + "' AND end_time > '" + end + "'))";
+        Statement stat = dbConnection.createStatement();
+        ResultSet r = stat.executeQuery(query);
+        return !r.next();
+    }
 
     /*
      * Metode som henter ut et spesifikt møterom fra databasen.
