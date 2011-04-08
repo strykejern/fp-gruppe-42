@@ -231,7 +231,7 @@ public class DB {
 
         String query =    "SELECT DISTINCT appointment.A_ID, creator, start_time, end_time, description, place "
                         + "FROM appointment "
-                        + "LEFT JOIN participant "
+                        + "JOIN participant "
                         + "ON creator='" + person.getUsername() + "' "
                         + "OR (username= '" + person.getUsername() + "' "
                         + "AND appointment.A_ID = participant.A_ID) "
