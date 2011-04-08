@@ -571,6 +571,8 @@ public class DB {
                throws SQLException {
         String query = "DELETE FROM participant WHERE username = '"+person.getUsername() + "'";
 
+        System.out.println(query);
+
         Statement stat = dbConnection.createStatement();
         stat.executeUpdate(query);
     }
